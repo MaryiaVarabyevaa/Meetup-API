@@ -2,10 +2,20 @@ import meetupService from "../services/meetup-service";
 import MeetupDto from "../dtos/meetup-dto";
 
 class MeetupController {
-    async getAllMeetups(req, res) {
+    async findAllMeetups(req, res) {
         try {
-            const meetups = await meetupService.getAllMeetups();
+            const meetups = await meetupService.findAllMeetups();
             res.send(meetups);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async findMeetupById(req, res) {
+        try {
+           const { id } = req.params;
+           const meetup = await meetupService.findMeetupById(id);
+           res.send(meetup)
         } catch (err) {
             console.log(err);
         }

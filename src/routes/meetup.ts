@@ -3,7 +3,8 @@ import meetupController from '../controllers/meetup-controller';
 
 const router = new Router();
 
-router.get('/', meetupController.getAllMeetups);
+router.get('/', meetupController.findAllMeetups);
+router.get('/:id', meetupController.findMeetupById);
 router.post('/', meetupController.addMeetup);
 
 export default router;
