@@ -1,15 +1,13 @@
-export default class CreateMeetupDto {
-    topic: string;
-    description: string;
-    keywords: string;
-    event_time: string;
-    event_place: string;
+import Joi from 'joi';
 
-    constructor(body) {
-        this.topic = body.topic;
-        this.description = body.description;
-        this.keywords = body.keywords;
-        this.event_time = body.event_time;
-        this.event_place = body.event_place;
-    }
+export default (data) => {
+    const schema = Joi.object({
+        topic: Joi.string().min(2).max(255).required(),
+        description: Joi.string().min(2).max(500).required(),
+        keywords: Joi.string().min(2).max(255).required(),
+        event_time: Joi.date().required(),
+        event_place: Joi.string().min(2).max(255).required(),
+    })
+
+    return schema.validate(data);
 }

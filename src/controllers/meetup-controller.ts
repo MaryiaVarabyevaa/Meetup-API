@@ -1,5 +1,6 @@
 import meetupService from "../services/meetup-service";
 import CreateMeetupDto from "../dtos/create-meetup.dto";
+import UpdateMeetupDto from "../dtos/update-meetup.dto";
 
 class MeetupController {
     async findAllMeetups(req, res) {
@@ -23,9 +24,13 @@ class MeetupController {
 
     async addMeetup(req, res) {
         try {
-            const meetupDto = new CreateMeetupDto(req.body);
-            const meetup = await meetupService.addMeetup(meetupDto);
-            res.send(meetup);
+            const { error, value } = CreateMeetupDto(req.body);
+            if (error) {
+               res.status(400).json({message: "Error"});
+            } else {
+                const meetup = await meetupService.addMeetup(value);
+                res.send(meetup);
+            }
         } catch (err) {
             console.log(err);
         }
@@ -33,8 +38,13 @@ class MeetupController {
 
     async updateMeetup(req, res) {
         try {
-            const updatedMeetup = await meetupService.updateMeetup(req.body);
-            res.send(updatedMeetup);
+            const { error, value } = UpdateMeetupDto(req.body);
+            if (error) {
+                res.status(400).json({message: "Error"})
+            } else {
+                const updatedMeetup = await meetupService.updateMeetup(value);
+                res.send(updatedMeetup);
+            }
         } catch (err) {
             console.log(err);
         }
