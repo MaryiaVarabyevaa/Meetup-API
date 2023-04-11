@@ -8,7 +8,7 @@ export const MeetUp = sequelize.define('meetup', {
     description: {type: DataTypes.STRING},
     keywords: {type: DataTypes.STRING},
     event_time: {type: DataTypes.DATE},
-    event_place: {type: DataTypes.DATE},
+    event_place: {type: DataTypes.STRING},
 })
 
 module.exports = {

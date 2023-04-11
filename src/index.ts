@@ -3,11 +3,14 @@ dotenv.config();
 import express from 'express';
 import sequelize from './db';
 const models = require('../src/models/meetup-model');
+import router from "./routes/index";
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
-
-const PORT = process.env.PORT || 5000;
+app.use(express.json());
+app.use('/api', router)
 
 
 const start = async () => {
