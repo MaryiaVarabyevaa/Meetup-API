@@ -1,4 +1,4 @@
-export default class MeetupDto {
+export default class CreateMeetupDto {
     topic: string;
     description: string;
     keywords: string;

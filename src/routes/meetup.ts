@@ -6,6 +6,7 @@ const router = new Router();
 router.get('/', meetupController.findAllMeetups);
 router.get('/:id', meetupController.findMeetupById);
 router.post('/', meetupController.addMeetup);
+router.put('/', meetupController.updateMeetup);
 
 export default router;
 

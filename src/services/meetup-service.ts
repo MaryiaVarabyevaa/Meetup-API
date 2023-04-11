@@ -1,5 +1,5 @@
-import MeetupDto from "../dtos/meetup-dto";
-
+import CreateMeetupDto from "../dtos/create-meetup.dto";
+import UpdateMeetupDto from "../dtos/update-meetup.dto";
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
@@ -29,7 +29,7 @@ class MeetupService {
         }
     }
 
-    async addMeetup(meetupDto: MeetupDto) {
+    async addMeetup(meetupDto: CreateMeetupDto) {
         try {
             const meetup = await MeetUp.findOne({
                 where: {...meetupDto}
@@ -41,6 +41,22 @@ class MeetupService {
 
             const newMeetup = await MeetUp.create({...meetupDto})
             return  newMeetup;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async updateMeetup(meetupDto: UpdateMeetupDto) {
+        try {
+           const {id, ...rest} = meetupDto;
+           const meetup = await MeetUp.findOne({ where: {id} });
+
+           if (!meetup) {
+               throw new Error('There is no such event');
+           }
+
+           const updatedMeetup = await MeetUp.update({...rest}, { where: { id } });
+           return updatedMeetup;
         } catch (err) {
             console.log(err);
         }

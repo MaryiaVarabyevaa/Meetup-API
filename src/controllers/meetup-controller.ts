@@ -1,5 +1,5 @@
 import meetupService from "../services/meetup-service";
-import MeetupDto from "../dtos/meetup-dto";
+import CreateMeetupDto from "../dtos/create-meetup.dto";
 
 class MeetupController {
     async findAllMeetups(req, res) {
@@ -23,9 +23,18 @@ class MeetupController {
 
     async addMeetup(req, res) {
         try {
-            const meetupDto = new MeetupDto(req.body);
+            const meetupDto = new CreateMeetupDto(req.body);
             const meetup = await meetupService.addMeetup(meetupDto);
             res.send(meetup);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    async updateMeetup(req, res) {
+        try {
+            const updatedMeetup = await meetupService.updateMeetup(req.body);
+            res.send(updatedMeetup);
         } catch (err) {
             console.log(err);
         }
