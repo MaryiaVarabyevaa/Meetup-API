@@ -7,6 +7,7 @@ router.get('/', meetupController.findAllMeetups);
 router.get('/:id', meetupController.findMeetupById);
 router.post('/', meetupController.addMeetup);
 router.put('/', meetupController.updateMeetup);
+router.delete('/', meetupController.deleteMeetup);
 
 export default router;
 

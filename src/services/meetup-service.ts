@@ -61,6 +61,25 @@ class MeetupService {
             console.log(err);
         }
     }
+
+    async deleteMeetup(id: number) {
+        try {
+            const meetup = await MeetUp.findOne({ where: {id} });
+
+            if (!meetup) {
+                throw new Error('There is no such event');
+            }
+
+            const deletedFilm = await MeetUp.destroy({
+                where: { id }
+            });
+
+            return deletedFilm;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 }
 
 export default new MeetupService();

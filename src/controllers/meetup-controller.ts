@@ -39,6 +39,15 @@ class MeetupController {
             console.log(err);
         }
     }
+    async deleteMeetup(req, res) {
+        try {
+            const deletedMeetup = await meetupService.deleteMeetup(req.body.id);
+            res.send('GOOD')
+            // res.status(204).sendStatus('204 No Content').toString();
+        } catch (err) {
+            console.log(err);
+        }
+    }
 }
 
 export default new MeetupController();
