@@ -1,12 +1,13 @@
-import CreateMeetupDto from "../dtos/create-meetup.dto";
-import UpdateMeetupDto from "../dtos/update-meetup.dto";
+import {CreateMeetup} from "../types/CreateMeetup";
+import {UpdateMeetup} from "../types/UpdateMeetup";
+
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
     async findAllMeetups() {
         try {
             const meetups = await MeetUp.findAll({
-                attributes: { exclude: ['createdAt', 'updatedAt'] }
+                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] }
             });
             return meetups;
         } catch (err) {
@@ -29,7 +30,7 @@ class MeetupService {
         }
     }
 
-    async addMeetup(meetupDto: CreateMeetupDto) {
+    async addMeetup(meetupDto: CreateMeetup) {
         try {
             const meetup = await MeetUp.findOne({
                 where: {...meetupDto}
@@ -46,7 +47,7 @@ class MeetupService {
         }
     }
 
-    async updateMeetup(meetupDto: UpdateMeetupDto) {
+    async updateMeetup(meetupDto: UpdateMeetup) {
         try {
            const {id, ...rest} = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
