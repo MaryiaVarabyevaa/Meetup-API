@@ -3,13 +3,16 @@ import MeetupDto from "../dtos/meetup-dto";
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
-    // async getAllMeetups() {
-    //     try {
-    //         return 'Everything is working!';
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
+    async getAllMeetups() {
+        try {
+            const meetups = await MeetUp.findAll({
+                attributes: { exclude: ['createdAt', 'updatedAt'] }
+            });
+            return meetups;
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     async addMeetup(meetupDto: MeetupDto) {
         try {
