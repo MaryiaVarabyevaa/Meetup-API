@@ -32,15 +32,17 @@ class MeetupService {
 
     async addMeetup(meetupDto: CreateMeetup) {
         try {
+            const {  eventTime,  eventPlace, ...rest } = meetupDto;
+            const value = { ...rest, event_time: eventTime, event_place: eventPlace };
             const meetup = await MeetUp.findOne({
-                where: {...meetupDto}
+                where: {...value}
             });
 
             if (meetup) {
                 throw new Error('Such a meetup already exists')
             }
 
-            const newMeetup = await MeetUp.create({...meetupDto})
+            const newMeetup = await MeetUp.create({...value})
             return  newMeetup;
         } catch (err) {
             console.log(err);
