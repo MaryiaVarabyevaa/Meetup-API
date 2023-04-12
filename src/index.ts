@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import sequelize from './db';
-const models = require('../src/models/meetup-model');
+const meetupModel = require('../src/models/meetup-model');
+const userModer = require('../src/models/user-model');
 import router from "./routes/index";
 
 const PORT = process.env.PORT || 5000;
