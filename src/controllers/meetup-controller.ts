@@ -33,7 +33,7 @@ class MeetupController {
 
     async updateMeetup(req, res) {
         try {
-            const { error, value } = UpdateMeetupDto(req.body);
+            const { error, value } = UpdateMeetupDto(req.validatedData);
             if (error) {
                 res.status(400).json({message: "Error"})
             } else {

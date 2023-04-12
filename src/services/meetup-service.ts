@@ -51,14 +51,14 @@ class MeetupService {
 
     async updateMeetup(meetupDto: UpdateMeetup) {
         try {
-           const {id, ...rest} = meetupDto;
+           const { eventTime,  eventPlace, id, ...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
 
            if (!meetup) {
                throw new Error('There is no such event');
            }
 
-           const updatedMeetup = await MeetUp.update({...rest}, { where: { id } });
+           const updatedMeetup = await MeetUp.update({...rest, event_time: eventTime, event_place: eventPlace}, { where: { id } });
            return updatedMeetup;
         } catch (err) {
             console.log(err);
