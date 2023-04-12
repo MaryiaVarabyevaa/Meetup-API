@@ -6,13 +6,15 @@ const meetupModel = require('../src/models/meetup-model');
 const userModer = require('../src/models/user-model');
 const tokenModel = require('../src/models/token-model');
 import router from "./routes/index";
+import errorMiddleware from "./middlewares/error-middleware";
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 app.use(express.json());
-app.use('/api', router)
+app.use('/api', router);
+app.use(errorMiddleware);
 
 
 const start = async () => {
