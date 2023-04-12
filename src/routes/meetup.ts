@@ -5,18 +5,13 @@ import validateMeetupUpdateMiddleware from "../middlewares/validateMeetupUpdate-
 
 const router = new Router();
 
-router.get('/', meetupController.findAllMeetups);
+router.route('/')
+    .get(meetupController.findAllMeetups)
+    .post(validateNewMeetUpMiddleware, meetupController.addMeetup)
+    .put(validateMeetupUpdateMiddleware, meetupController.updateMeetup)
+    .delete( meetupController.deleteMeetup);
+
 router.get('/:id', meetupController.findMeetupById);
-router.post(
-    '/',
-    validateNewMeetUpMiddleware,
-    meetupController.addMeetup);
-router.put(
-    '/',
-    validateMeetupUpdateMiddleware,
-    meetupController.updateMeetup
-);
-router.delete('/', meetupController.deleteMeetup);
 
 export default router;
 

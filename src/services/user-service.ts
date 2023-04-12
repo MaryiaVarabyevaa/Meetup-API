@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import {CreateUser} from "../types/CreateUser";
-const { User } = require('../models/user-model');
 import tokenService from "../services/token-service";
-import NewUserDto from "../dtos/new-user.dto";
 import ApiError from "../exceptions/api-error";
+import TokenPayload from "../utils/jwtUtils";
+
+const { User } = require('../models/user-model');
 
 class UserService {
     async registration(userDto: CreateUser) {
@@ -14,13 +15,32 @@ class UserService {
         }
         const hashPassword = await bcrypt.hash(password, 3);
         const user = await User.create({email, password: hashPassword, first_name: firstName, last_name: lastName});
-        const newUserDto = new NewUserDto(user);
-        const tokens = tokenService.generateToken({...newUserDto});
-        await tokenService.saveToken(newUserDto.id, tokens.refreshToken);
+        const payload = new TokenPayload(user);
+        const tokens = tokenService.generateToken({...payload});
+        await tokenService.saveToken(payload.id, tokens.refreshToken);
 
         return {
             ...tokens,
-            user: newUserDto
+            user: payload
+        }
+    }
+
+    async login(email: string, password: string) {
+        const user = await User.findOne({where: {email}});
+        if (!user) {
+            throw ApiError.BadRequest('Invalid email or password. Please check your credentials and try again.');
+        }
+        const isPasswordEquals = bcrypt.compare(password, user.password);
+        if (!isPasswordEquals) {
+            throw ApiError.BadRequest('Invalid email or password. Please check your credentials and try again.')
+        }
+        const payload = new TokenPayload(user);
+        const tokens = tokenService.generateToken({...payload});
+        await tokenService.saveToken(payload.id, tokens.refreshToken);
+
+        return {
+            ...tokens,
+            user: payload
         }
     }
 }
