@@ -4,6 +4,7 @@ import express from 'express';
 import sequelize from './db';
 const meetupModel = require('../src/models/meetup-model');
 const userModer = require('../src/models/user-model');
+const tokenModel = require('../src/models/token-model');
 import router from "./routes/index";
 
 const PORT = process.env.PORT || 5000;
