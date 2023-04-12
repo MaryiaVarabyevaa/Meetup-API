@@ -24,13 +24,8 @@ class MeetupController {
 
     async addMeetup(req, res) {
         try {
-            const { error, value } = CreateMeetupDto(req.body);
-            if (error) {
-               res.status(400).json({message: "Error"});
-            } else {
-                const meetup = await meetupService.addMeetup(value);
-                res.send(meetup);
-            }
+            const meetup = await meetupService.addMeetup(req.validatedData);
+            res.send(meetup);
         } catch (err) {
             console.log(err);
         }
