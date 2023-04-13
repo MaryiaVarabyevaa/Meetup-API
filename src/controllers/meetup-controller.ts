@@ -51,7 +51,11 @@ class MeetupController {
     }
     async deleteMeetup(req, res) {
         try {
-            const deletedMeetup = await meetupService.deleteMeetup(req.body.id);
+            const { role, id } = req.user;
+            if (role === UserRole.USER) {
+                throw ApiError.Forbidden();
+            }
+            const deletedMeetup = await meetupService.deleteMeetup(req.body.id, id);
             res.send('GOOD')
             // res.status(204).sendStatus('204 No Content').toString();
         } catch (err) {

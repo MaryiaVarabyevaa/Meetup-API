@@ -66,14 +66,15 @@ class MeetupService {
         }
     }
 
-    async deleteMeetup(id: number) {
+    async deleteMeetup(id: number, userId: number) {
         try {
             const meetup = await MeetUp.findOne({ where: {id} });
-
             if (!meetup) {
                 throw new Error('There is no such event');
             }
-
+            if (meetup.userId !== userId) {
+                throw ApiError.Forbidden();
+            }
             const deletedFilm = await MeetUp.destroy({
                 where: { id }
             });

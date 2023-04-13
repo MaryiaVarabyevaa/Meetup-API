@@ -10,7 +10,7 @@ router.route('/')
     .get(meetupController.findAllMeetups)
     .post(authMiddleware, validateNewMeetUpMiddleware, meetupController.addMeetup)
     .put(authMiddleware, validateMeetupUpdateMiddleware, meetupController.updateMeetup)
-    .delete( meetupController.deleteMeetup);
+    .delete(authMiddleware, meetupController.deleteMeetup);
 
 router.get('/:id', meetupController.findMeetupById);
 
