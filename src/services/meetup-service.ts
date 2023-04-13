@@ -32,8 +32,8 @@ class MeetupService {
 
     async addMeetup(meetupDto: CreateMeetup) {
         try {
-            const {  eventTime,  eventPlace, ...rest } = meetupDto;
-            const value = { ...rest, event_time: eventTime, event_place: eventPlace };
+            const {  eventTime,  eventPlace, id, role, ...rest } = meetupDto;
+            const value = { ...rest, event_time: eventTime, event_place: eventPlace, userId: id };
             const meetup = await MeetUp.findOne({
                 where: {...value}
             });

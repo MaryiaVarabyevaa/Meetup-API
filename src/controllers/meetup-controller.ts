@@ -1,6 +1,7 @@
 import meetupService from "../services/meetup-service";
-import CreateMeetupDto from "../dtos/create-meetup.dto";
 import UpdateMeetupDto from "../dtos/update-meetup.dto";
+import ApiError from "../exceptions/api-error";
+import {UserRole} from "../constants/userRoles";
 
 class MeetupController {
     async findAllMeetups(req, res) {
@@ -24,6 +25,10 @@ class MeetupController {
 
     async addMeetup(req, res) {
         try {
+            const { role } = req.validatedData;
+            if (role === UserRole.USER) {
+                throw ApiError.Forbidden();
+            }
             const meetup = await meetupService.addMeetup(req.validatedData);
             res.send(meetup);
         } catch (err) {

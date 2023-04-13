@@ -8,7 +8,7 @@ const router = new Router();
 
 router.route('/')
     .get(meetupController.findAllMeetups)
-    .post(validateNewMeetUpMiddleware, authMiddleware, meetupController.addMeetup)
+    .post(authMiddleware, validateNewMeetUpMiddleware, meetupController.addMeetup)
     .put(validateMeetupUpdateMiddleware, meetupController.updateMeetup)
     .delete( meetupController.deleteMeetup);
 
