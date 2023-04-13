@@ -6,8 +6,8 @@ import {UserRole} from "../constants/userRoles";
 class MeetupController {
     async findAllMeetups(req, res) {
         try {
-            const meetups = await meetupService.findAllMeetups();
-            res.send(meetups);
+            const meetups = await meetupService.findAllMeetups(req.query);
+            return res.json(meetups);
         } catch (err) {
             console.log(err);
         }

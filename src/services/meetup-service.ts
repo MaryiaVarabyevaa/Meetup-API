@@ -1,15 +1,48 @@
 import {CreateMeetup} from "../types/CreateMeetup";
 import {UpdateMeetup} from "../types/UpdateMeetup";
 import ApiError from "../exceptions/api-error";
+import {Op, Sequelize} from "sequelize";
+import {MeetUpSearchQuery} from "../types/MeetUpSearchQuery";
+import getNowDateTime from "../utils/getNowDateTime";
 
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
-    async findAllMeetups() {
+    async findAllMeetups(queries: MeetUpSearchQuery) {
         try {
-            const meetups = await MeetUp.findAll({
-                attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] }
-            });
+            let {keywords, limit, page, sortValue} = queries;
+            page = page || 1;
+            limit = limit || 2;
+            let offset = page * limit - limit;
+            sortValue = sortValue || 'ASC'
+            let meetups;
+            if (!keywords) {
+                // findAndCountAll используется для подсчета страниц на фронте
+                // возвращает общее количество товаров по заданному запросу
+                meetups = await MeetUp.findAndCountAll({
+                    where: {
+                        event_time: {[Op.gte]: getNowDateTime()}
+                    },
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+                    limit,
+                    offset,
+                    order: [['event_time', sortValue]],
+                });
+            } else {
+                const searchKeywords = keywords.split(',').join(' | ');
+                meetups = await MeetUp.findAndCountAll({
+                    where: {
+                        keywords: {
+                            [Op.match]: Sequelize.fn('to_tsquery', searchKeywords),
+                        },
+                        event_time: {[Op.gte]: getNowDateTime()}
+                    },
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
+                    limit,
+                    offset,
+                    order: ['event_time', sortValue],
+                })
+            }
             return meetups;
         } catch (err) {
             console.log(err);
@@ -33,8 +66,8 @@ class MeetupService {
 
     async addMeetup(meetupDto: CreateMeetup) {
         try {
-            const {  eventTime,  eventPlace, id, role, ...rest } = meetupDto;
-            const value = { ...rest, event_time: eventTime, event_place: eventPlace, userId: id };
+            const {  eventTime,  eventPlace, userId, role, ...rest } = meetupDto;
+            const value = { ...rest, event_time: eventTime, event_place: eventPlace, userId };
             const meetup = await MeetUp.findOne({
                 where: {...value}
             });
