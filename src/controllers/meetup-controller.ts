@@ -38,13 +38,13 @@ class MeetupController {
 
     async updateMeetup(req, res) {
         try {
-            const { error, value } = UpdateMeetupDto(req.validatedData);
-            if (error) {
-                res.status(400).json({message: "Error"})
-            } else {
-                const updatedMeetup = await meetupService.updateMeetup(value);
-                res.send(updatedMeetup);
+            const { role, accessingUserId, userId } = req.validatedData;
+            if (role === UserRole.USER && accessingUserId !== userId) {
+                throw ApiError.Forbidden();
             }
+            const updatedMeetup = await meetupService.updateMeetup(req.validatedData);
+            res.send(updatedMeetup);
+
         } catch (err) {
             console.log(err);
         }

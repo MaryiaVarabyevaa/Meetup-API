@@ -6,7 +6,7 @@ export default (req, res, next) => {
         res.status(400).json({message: 'One or more fields in the request body are invalid.'});
     } else {
         const { id, role } = req.user;
-        req.validatedData = {...value, id, role};
+        req.validatedData = {...value, userId: id, role};
         next();
     }
 }

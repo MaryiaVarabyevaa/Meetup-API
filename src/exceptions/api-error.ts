@@ -17,7 +17,7 @@ export default class ApiError extends Error {
     }
 
     static Forbidden() {
-        return new ApiError(403, 'Access to the requested resource is forbidden for your user role.');
+        return new ApiError(403, 'Access to the requested resource is forbidden for your user role or ID.');
     }
 
     static NotFound() {

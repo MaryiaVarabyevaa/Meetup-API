@@ -1,5 +1,6 @@
 import {CreateMeetup} from "../types/CreateMeetup";
 import {UpdateMeetup} from "../types/UpdateMeetup";
+import ApiError from "../exceptions/api-error";
 
 const { MeetUp } = require('../models/meetup-model');
 
@@ -51,7 +52,7 @@ class MeetupService {
 
     async updateMeetup(meetupDto: UpdateMeetup) {
         try {
-           const { eventTime,  eventPlace, id, ...rest } = meetupDto;
+           const { eventTime,  eventPlace, id, accessingUserId,...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
 
            if (!meetup) {

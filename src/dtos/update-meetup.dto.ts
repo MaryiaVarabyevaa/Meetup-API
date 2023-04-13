@@ -8,6 +8,7 @@ export default (data) => {
         keywords: Joi.string().min(2).max(255).required(),
         eventTime: Joi.date().required(),
         eventPlace: Joi.string().min(2).max(255).required(),
+        userId: Joi.number().min(1).integer().required(),
     })
 
     return schema.validate(data);
