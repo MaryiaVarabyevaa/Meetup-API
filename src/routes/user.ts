@@ -4,11 +4,9 @@ import validateRegistrationMiddleware from "../middlewares/validateRegistration-
 
 const router = new Router();
 
-router.post(
-    '/registration',
-    validateRegistrationMiddleware,
-    userController.registration);
+router.post('/registration', validateRegistrationMiddleware, userController.registration);
 router.post('/login', userController.login);
 router.get('/refresh', userController.refresh);
+router.put('/:id/role', userController.changeUserRole);
 
 export default router;

@@ -3,6 +3,7 @@ import {CreateUser} from "../types/CreateUser";
 import tokenService from "../services/token-service";
 import ApiError from "../exceptions/api-error";
 import TokenPayload from "../utils/jwtUtils";
+import {UserRole} from "../constants/userRoles";
 
 const { User } = require('../models/user-model');
 
@@ -63,6 +64,16 @@ class UserService {
             ...tokens,
             user: payload
         }
+    }
+
+    async changeUserRole(id: number) {
+        const user = await User.findOne({where: {id}});
+        if (!user) {
+            throw ApiError.NotFound();
+        }
+        const role = UserRole.USER === user.role? UserRole.ORGANIZER : UserRole.USER;
+        const organizer = User.update({role}, {where: {id}});
+        return organizer;
     }
 }
 

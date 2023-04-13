@@ -1,6 +1,7 @@
 import {DataTypes} from 'sequelize';
 import sequelize from '../db';
 import {Token} from "./token-model";
+import {MeetUp} from "./meetup-model";
 
 
 export const User = sequelize.define('user', {
@@ -14,6 +15,9 @@ export const User = sequelize.define('user', {
 
 User.hasOne(Token);
 Token.belongsTo(User);
+
+User.hasMany(MeetUp);
+MeetUp.belongsTo(User);
 
 module.exports = {
     User
