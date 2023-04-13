@@ -43,6 +43,27 @@ class UserService {
             user: payload
         }
     }
+
+    async refresh(refreshToken: string) {
+        if (!refreshToken) {
+            throw ApiError.UnauthorizedError();
+        }
+        const userData = tokenService.validateRefreshToken(refreshToken);
+        const tokenFromDb = await tokenService.findToken(refreshToken);
+        if (!userData || !tokenFromDb) {
+            throw ApiError.UnauthorizedError();
+        }
+
+        const user = await User.findOne({where: {id: userData.id}})
+        const payload = new TokenPayload(user);
+        const tokens = tokenService.generateToken({...payload});
+        await tokenService.saveToken(payload.id, tokens.refreshToken);
+
+        return {
+            ...tokens,
+            user: payload
+        }
+    }
 }
 
 export default new UserService();
