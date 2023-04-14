@@ -18,6 +18,20 @@ MeetUp.addHook('afterCreate', (instance, options) => {
     return instance;
 });
 
+MeetUp.addHook('afterFind', (result, options) => {
+    if (Array.isArray(result)) { // Handle findAndCountAll result
+        result.forEach(item => {
+            delete item.dataValues.deletedAt;
+            delete item.dataValues.createdAt;
+            delete item.dataValues.updatedAt;
+        });
+    } else { // Handle findOne result
+        delete result.dataValues.deletedAt;
+        delete result.dataValues.createdAt;
+        delete result.dataValues.updatedAt;
+    }
+});
+
 module.exports = {
     MeetUp
 }
