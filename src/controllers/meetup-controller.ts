@@ -1,5 +1,4 @@
 import meetupService from "../services/meetup-service";
-import UpdateMeetupDto from "../dtos/update-meetup.dto";
 import ApiError from "../exceptions/api-error";
 import {UserRole} from "../constants/userRoles";
 
@@ -7,7 +6,7 @@ class MeetupController {
     async findAllMeetups(req, res) {
         try {
             const meetups = await meetupService.findAllMeetups(req.query);
-            return res.json(meetups);
+            return res.status(200).json(meetups);
         } catch (err) {
             console.log(err);
         }
@@ -17,7 +16,7 @@ class MeetupController {
         try {
            const { id } = req.params;
            const meetup = await meetupService.findMeetupById(id);
-           res.send(meetup)
+           res.status(200).json(meetup)
         } catch (err) {
             console.log(err);
         }
@@ -30,7 +29,7 @@ class MeetupController {
                 throw ApiError.Forbidden();
             }
             const meetup = await meetupService.addMeetup(req.validatedData);
-            res.send(meetup);
+            res.status(201).json(meetup);
         } catch (err) {
             console.log(err);
         }
@@ -43,7 +42,7 @@ class MeetupController {
                 throw ApiError.Forbidden();
             }
             const updatedMeetup = await meetupService.updateMeetup(req.validatedData);
-            res.send(updatedMeetup);
+            res.status(200).json(updatedMeetup);
 
         } catch (err) {
             console.log(err);
@@ -56,8 +55,7 @@ class MeetupController {
                 throw ApiError.Forbidden();
             }
             const deletedMeetup = await meetupService.deleteMeetup(req.body.id, id);
-            res.send('GOOD')
-            // res.status(204).sendStatus('204 No Content').toString();
+            res.status(204).json(deletedMeetup);
         } catch (err) {
             console.log(err);
         }
