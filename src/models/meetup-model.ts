@@ -11,6 +11,13 @@ export const MeetUp = sequelize.define('meetup', {
     event_place: {type: DataTypes.STRING, allowNull: false},
 }, { paranoid: true })
 
+MeetUp.addHook('afterCreate', (instance, options) => {
+    delete instance.dataValues.deletedAt;
+    delete instance.dataValues.createdAt;
+    delete instance.dataValues.updatedAt;
+    return instance;
+});
+
 module.exports = {
     MeetUp
 }
