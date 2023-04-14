@@ -1,6 +1,7 @@
 import Joi from 'joi';
+import {CreateUser} from "../types/CreateUser";
 
-export default (data) => {
+export default (data: CreateUser) => {
     const schema = Joi.object({
         firstName: Joi.string().min(2).max(50).required(),
         lastName: Joi.string().min(2).max(50).required(),
