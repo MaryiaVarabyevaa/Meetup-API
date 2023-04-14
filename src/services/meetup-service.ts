@@ -4,17 +4,24 @@ import ApiError from "../exceptions/api-error";
 import {Op, Sequelize} from "sequelize";
 import {MeetUpSearchQuery} from "../types/MeetUpSearchQuery";
 import getNowDateTime from "../utils/getNowDateTime";
+import {DeleteMeetupResponse} from "../types/DeleteMeetupResponse";
+import {FindAndCountAllResult} from "../types/FindAndCountAllResult";
+import {SortOptions} from "../constants/sortOptions";
+import {MeetupModelInstance} from "../types/MeetupModelInstance";
+import {MigrationMeetupResult} from "../types/MigrationMeetupResult";
 
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
-    async findAllMeetups(queries: MeetUpSearchQuery) {
+    async findAllMeetups(queries: MeetUpSearchQuery): Promise<FindAndCountAllResult>  {
         try {
-            let {keywords, limit, page, sortValue} = queries;
-            page = page || 1;
-            limit = limit || 2;
-            let offset = page * limit - limit;
-            sortValue = sortValue || 'ASC'
+            let {
+                keywords,
+                limit = SortOptions.LIMIT,
+                page = SortOptions.PAGE,
+                sortValue = SortOptions.SORT
+            } = queries;
+            const offset = page * limit - limit;
             let meetups;
             if (!keywords) {
                 // findAndCountAll используется для подсчета страниц на фронте
@@ -23,7 +30,6 @@ class MeetupService {
                     where: {
                         event_time: {[Op.gte]: getNowDateTime()}
                     },
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
                     limit,
                     offset,
                     order: [['event_time', sortValue]],
@@ -37,10 +43,9 @@ class MeetupService {
                         },
                         event_time: {[Op.gte]: getNowDateTime()}
                     },
-                    attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
                     limit,
                     offset,
-                    order: ['event_time', sortValue],
+                    // order: ['event_time', sortValue],
                 })
             }
             return meetups;
@@ -49,22 +54,21 @@ class MeetupService {
         }
     }
 
-    async findMeetupById(id: number) {
+    async findMeetupById(id: number):Promise<MeetupModelInstance> {
         try {
             const meetup = await MeetUp.findOne({
                 where: {id},
-                attributes: { exclude: ['createdAt', 'updatedAt'] }
             });
             if (!meetup) {
                 throw ApiError.NotFound();
             }
-            return meetup;
+            return meetup as MeetupModelInstance;
         } catch (err) {
             console.log(err);
         }
     }
 
-    async addMeetup(meetupDto: CreateMeetup) {
+    async addMeetup(meetupDto: CreateMeetup): Promise<MigrationMeetupResult> {
         try {
             const {  eventTime,  eventPlace, userId, role, ...rest } = meetupDto;
             const value = { ...rest, event_time: eventTime, event_place: eventPlace, userId };
@@ -76,14 +80,14 @@ class MeetupService {
                 throw ApiError.Conflict();
             }
 
-            const newMeetup = await MeetUp.create({...value})
-            return  newMeetup;
+            const newMeetup = await MeetUp.create({...value}) as MigrationMeetupResult;
+            return newMeetup;
         } catch (err) {
             console.log(err);
         }
     }
 
-    async updateMeetup(meetupDto: UpdateMeetup) {
+    async updateMeetup(meetupDto: UpdateMeetup): Promise<MeetupModelInstance> {
         try {
            const { eventTime,  eventPlace, id, accessingUserId,...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
@@ -92,27 +96,29 @@ class MeetupService {
                throw ApiError.NotFound();
            }
 
-           const updatedMeetup = await MeetUp.update({...rest, event_time: eventTime, event_place: eventPlace}, { where: { id } });
-           return updatedMeetup;
+           await meetup.update({...rest, event_time: eventTime, event_place: eventPlace});
+           await meetup.save();
+            const updatedInstance = await MeetUp.findByPk(id) as UpdateMeetup;
+            return updatedInstance;
         } catch (err) {
             console.log(err);
         }
     }
 
-    async deleteMeetup(id: number, userId: number) {
+    async deleteMeetup(id: number, userId: number): Promise<DeleteMeetupResponse> {
         try {
             const meetup = await MeetUp.findOne({ where: {id} });
             if (!meetup) {
                 throw ApiError.NotFound();
             }
-            if (meetup.userId !== userId) {
+            const { userId: organizerId } = meetup;
+            if (organizerId !== userId) {
                 throw ApiError.Forbidden();
             }
-            const deletedFilm = await MeetUp.destroy({
+            await MeetUp.destroy({
                 where: { id }
             });
-
-            return deletedFilm;
+            return { success: true };
         } catch (err) {
             console.log(err);
         }
