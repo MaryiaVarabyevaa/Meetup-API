@@ -56,7 +56,7 @@ class MeetupService {
                 attributes: { exclude: ['createdAt', 'updatedAt'] }
             });
             if (!meetup) {
-                throw new Error('There is no such meetup');
+                throw ApiError.NotFound();
             }
             return meetup;
         } catch (err) {
@@ -73,7 +73,7 @@ class MeetupService {
             });
 
             if (meetup) {
-                throw new Error('Such a meetup already exists')
+                throw ApiError.Conflict();
             }
 
             const newMeetup = await MeetUp.create({...value})
@@ -89,7 +89,7 @@ class MeetupService {
            const meetup = await MeetUp.findOne({ where: {id} });
 
            if (!meetup) {
-               throw new Error('There is no such event');
+               throw ApiError.NotFound();
            }
 
            const updatedMeetup = await MeetUp.update({...rest, event_time: eventTime, event_place: eventPlace}, { where: { id } });
@@ -103,7 +103,7 @@ class MeetupService {
         try {
             const meetup = await MeetUp.findOne({ where: {id} });
             if (!meetup) {
-                throw new Error('There is no such event');
+                throw ApiError.NotFound();
             }
             if (meetup.userId !== userId) {
                 throw ApiError.Forbidden();

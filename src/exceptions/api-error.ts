@@ -21,6 +21,10 @@ export default class ApiError extends Error {
     }
 
     static NotFound() {
-        return new ApiError(404, 'The user with the requested ID could not be found.')
+        return new ApiError(404, 'The requested resource could not be found on the server.')
+    }
+
+    static Conflict() {
+        return new ApiError(409, 'Meetup already exists');
     }
 }
