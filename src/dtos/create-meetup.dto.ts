@@ -1,13 +1,24 @@
 import Joi from 'joi';
 import {CreateMeetup} from "../types/CreateMeetup";
 
+const MESSAGE = 'Date should not be less than the current one';
+
 export default (data: CreateMeetup) => {
     const schema = Joi.object({
         topic: Joi.string().min(2).max(255).required(),
         description: Joi.string().min(2).max(500).required(),
         keywords: Joi.string().min(2).max(255).required(),
         time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/).required(),
-        date: Joi.date().greater(Joi.ref('now')).required(),
+        date: Joi.string()
+            .pattern(/^\d{4}-\d{2}-\d{2}$/)
+            .custom((value, helpers) => {
+                const currentDate = new Date().toISOString().substring(0, 10);
+                if (value < currentDate) {
+                    return helpers.message(MESSAGE);
+                }
+                return value;
+            })
+            .required(),
         eventPlace: Joi.string().min(2).max(255).required(),
     })
 
