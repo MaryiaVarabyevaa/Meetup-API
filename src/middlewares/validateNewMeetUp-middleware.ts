@@ -8,8 +8,7 @@ export default (req:AuthenticatedRequest, res: Response, next: NextFunction): vo
     if (error) {
         res.status(400).json({message: 'One or more fields in the request body are invalid.'});
     } else {
-        const { id, role } = req.user;
-        req.validatedData = {...value, userId: id, role};
+        req.validatedData = {...value};
         next();
     }
 }
