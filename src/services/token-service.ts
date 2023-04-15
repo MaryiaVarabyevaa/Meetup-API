@@ -1,6 +1,7 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
 import {TokenPayload} from "../types/TokenPayload";
 import {TokenPair} from "../types/TokenPair";
+import {MigrationTokenResult} from "../types/MigrationTokenResult";
 
 const { Token } = require('../models/token-model');
 
@@ -38,27 +39,26 @@ class TokenService {
         }
     }
 
-    async saveToken(userId, refreshToken) {
+    async saveToken(userId, refreshToken): Promise<MigrationTokenResult | void> {
         try {
             const tokenData = await Token.findOne({where: {userId}});
             // для обновления refresh_token в бд
             if (tokenData) {
                 tokenData.refresh_token = refreshToken;
-                return tokenData.save();
+                await tokenData.save();
+                return;
             }
             // пользователя, который логиниться впервые
-            const token = await Token.create({ userId, refresh_token: refreshToken });
+            const token = await Token.create({ userId, refresh_token: refreshToken }) as MigrationTokenResult;
             return token;
         } catch (err) {
             throw err;
         }
     }
 
-    async findToken(refreshToken: string) {
+    async findToken(refreshToken: string): Promise<MigrationTokenResult> {
         try {
-            const tokenData = await Token.findOne(
-                {where : {refresh_token: refreshToken}}
-            );
+            const tokenData = await Token.findOne({where : {refresh_token: refreshToken}}) as MigrationTokenResult;
             return tokenData;
         } catch (err) {
             throw err;
