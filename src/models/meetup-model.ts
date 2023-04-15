@@ -25,7 +25,8 @@ MeetUp.addHook('afterFind', (result, options) => {
             delete item.dataValues.createdAt;
             delete item.dataValues.updatedAt;
         });
-    } else { // Handle findOne result
+    }
+    if (result) {
         delete result.dataValues.deletedAt;
         delete result.dataValues.createdAt;
         delete result.dataValues.updatedAt;
