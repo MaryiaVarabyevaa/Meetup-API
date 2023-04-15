@@ -49,7 +49,6 @@ class MeetupController {
             }
             const updatedMeetup = await meetupService.updateMeetup(req.validatedData as UpdateMeetup);
             return res.status(200).json(updatedMeetup);
-
         } catch (err) {
             next(err);
         }
