@@ -4,4 +4,5 @@ export interface CreateMeetup {
     keywords: string;
     eventTime: string;
     eventPlace: string;
+    userId: number;
 }

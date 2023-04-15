@@ -1,4 +1,7 @@
-import {Request} from "express";
+import { Request } from "express";
+import {CreateUser} from "./CreateUser";
+import {CreateMeetup} from "./CreateMeetup";
+import {UpdateMeetup} from "./UpdateMeetup";
 
 export interface AuthenticatedRequest extends Request {
     user?: {
@@ -6,4 +9,7 @@ export interface AuthenticatedRequest extends Request {
         role: string;
         email: string;
     };
+
+    validatedData?: CreateMeetup | UpdateMeetup;
+    userValidatedData?: CreateUser;
 }
