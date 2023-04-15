@@ -50,7 +50,7 @@ class MeetupService {
             }
             return meetups;
         } catch (err) {
-            console.log(err);
+           throw err;
         }
     }
 
@@ -64,26 +64,22 @@ class MeetupService {
             }
             return meetup as MeetupModelInstance;
         } catch (err) {
-            console.log(err);
+            throw err;
         }
     }
 
-    async addMeetup(meetupDto: CreateMeetup): Promise<MigrationMeetupResult> {
+    async addMeetup(meetupDto: CreateMeetup, userId: number): Promise<MigrationMeetupResult> {
         try {
-            const {  eventTime,  eventPlace, userId, role, ...rest } = meetupDto;
-            const value = { ...rest, event_time: eventTime, event_place: eventPlace, userId };
-            const meetup = await MeetUp.findOne({
-                where: {...value}
-            });
-
+            const {  eventTime,  eventPlace, topic, description, keywords } = meetupDto;
+            const value = { event_time: eventTime, event_place: eventPlace, userId, topic, description, keywords };
+            const meetup = await MeetUp.findOne({where: {event_place: eventPlace, event_time: eventTime}});
             if (meetup) {
                 throw ApiError.Conflict();
             }
-
             const newMeetup = await MeetUp.create({...value}) as MigrationMeetupResult;
             return newMeetup;
         } catch (err) {
-            console.log(err);
+            throw err;
         }
     }
 
@@ -91,37 +87,35 @@ class MeetupService {
         try {
            const { eventTime,  eventPlace, id, accessingUserId,...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
-
            if (!meetup) {
                throw ApiError.NotFound();
            }
-
            await meetup.update({...rest, event_time: eventTime, event_place: eventPlace});
            await meetup.save();
-            const updatedInstance = await MeetUp.findByPk(id) as UpdateMeetup;
-            return updatedInstance;
+           const updatedInstance = await MeetUp.findByPk(id) as UpdateMeetup;
+           return updatedInstance;
         } catch (err) {
-            console.log(err);
+            throw err;
         }
     }
 
     async deleteMeetup(id: number, userId: number): Promise<DeleteMeetupResponse> {
-        try {
-            const meetup = await MeetUp.findOne({ where: {id} });
-            if (!meetup) {
-                throw ApiError.NotFound();
-            }
-            const { userId: organizerId } = meetup;
-            if (organizerId !== userId) {
-                throw ApiError.Forbidden();
-            }
-            await MeetUp.destroy({
-                where: { id }
-            });
-            return { success: true };
-        } catch (err) {
-            console.log(err);
-        }
+       try {
+           const meetup = await MeetUp.findOne({ where: {id} });
+           if (!meetup) {
+               throw ApiError.NotFound();
+           }
+           const { userId: organizerId } = meetup;
+           if (organizerId !== userId) {
+               throw ApiError.Forbidden();
+           }
+           await MeetUp.destroy({
+               where: { id }
+           });
+           return { success: true };
+       } catch (err) {
+           throw err;
+       }
     }
 
 }
