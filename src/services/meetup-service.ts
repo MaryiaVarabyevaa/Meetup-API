@@ -3,105 +3,42 @@ import {UpdateMeetup} from "../types/UpdateMeetup";
 import ApiError from "../exceptions/api-error";
 import {Op, Sequelize} from "sequelize";
 import {MeetUpSearchQuery} from "../types/MeetUpSearchQuery";
-import getNowDateTime from "../utils/getNowDateTime";
 import {DeleteMeetupResponse} from "../types/DeleteMeetupResponse";
 import {FindAndCountAllResult} from "../types/FindAndCountAllResult";
 import {SortOptions} from "../constants/sortOptions";
 import {MeetupModelInstance} from "../types/MeetupModelInstance";
 import {MigrationMeetupResult} from "../types/MigrationMeetupResult";
-import Meetup from "../routes/meetup";
+import getNowTime from "../utils/getNowTime";
+import getNowDate from "../utils/getNowDate";
 
 const { MeetUp } = require('../models/meetup-model');
 
 class MeetupService {
     async findAllMeetups(queries: MeetUpSearchQuery): Promise<FindAndCountAllResult>  {
         try {
-            let {
-                keywords,
-                limit = SortOptions.LIMIT,
-                page = SortOptions.PAGE,
-                sortByDate,
-                sortByTopic,
-            } = queries;
+            const { limit = SortOptions.LIMIT, page = SortOptions.PAGE } = queries;
             const offset = page * limit - limit;
-            // const searchKeywords = keywords!.split(',').join(' | ');
-            let meetups;
 
-            const sortingConditions = [];
-            if (sortByDate) {
-                sortingConditions.push(['event_time', sortByDate]);
+            const sort = [];
+            // const filter = {date: {[Op.gte]: getNowDate()}, time:  {[Op.gte]: getNowTime()}};
+            const filter = { date: {[Op.gte]: getNowDate()}}
+
+            for (const [key, value] of Object.entries(queries)) {
+                if (key.startsWith('sort')) {
+                    sort.push([`${key.toLowerCase().slice(6)}`, value]);
+                }
+                if (key.startsWith('filter')) {
+                    if (key.endsWith('Keywords')) {
+                        filter[key.toLowerCase().slice(8)] = {[Op.match]: Sequelize.fn('to_tsquery', value.split(',').join(' | '))};
+                    } else {
+                        filter[key.toLowerCase().slice(8)] = {[Op.eq]: value};
+                    }
+                }
+
             }
-            if (sortByTopic) {
-                sortingConditions.push(['topic', sortByTopic]);
-            }
 
-            if (sortingConditions.length === 0) {
-                sortingConditions.push(['event_time', 'ASC']);
-            }
-
-
-            meetups = await MeetUp.findAndCountAll({
-                where: {
-                    [Op.and]: [
-                        {event_time: {[Op.gte]: getNowDateTime()}},
-                        // {keywords: {
-                        //         [Op.match]: Sequelize.fn('to_tsquery', searchKeywords),
-                        // }}
-                    ]
-                },
-                order: [
-                    sortingConditions.map(condition => [Sequelize.col(condition[0]), condition[1]])
-                ],
-                // limit,
-                // offset
-            });
-            // if (searchKeywords) {
-            //     meetups = await MeetUp.findAndCountAll({
-            //         where: {
-            //             [Op.and]: [
-            //                 {event_time: {[Op.gte]: getNowDateTime()}},
-            //                 { keywords: {
-            //                         [Op.match]: Sequelize.fn('to_tsquery', searchKeywords),
-            //                     },
-            //                 }
-            //             ]
-            //         },
-            //         limit,
-            //         offset,
-            //     });
-            // }
-            console.log(meetups)
-            // if (!keywords) {
-            //     meetups = await MeetUp.findAndCountAll({
-            //         // where: {
-            //         //     event_time: {[Op.gte]: getNowDateTime()}
-            //         // },
-            //         where: {
-            //             [Op.and]: [
-            //                 { title: { [Op.like]: '%example%' } },
-            //                 { author: { [Op.like]: '%john%' } },
-            //                 { createdAt: { [Op.gte]: new Date('2022-01-01') } }
-            //             ]
-            //         },
-            //         limit,
-            //         offset,
-            //         // order: [['event_time', sortValue]],
-            //     });
-            // }
-            // else {
-            //     const searchKeywords = keywords.split(',').join(' | ');
-            //     meetups = await MeetUp.findAndCountAll({
-            //         where: {
-            //             keywords: {
-            //                 [Op.match]: Sequelize.fn('to_tsquery', searchKeywords),
-            //             },
-            //             event_time: {[Op.gte]: getNowDateTime()}
-            //         },
-            //         limit,
-            //         offset,
-            //         // order: ['event_time', sortValue],
-            //     })
-            // }
+            if (sort.length === 0) sort.push(['date', 'ASC'], ['time', 'ASC']);
+            const meetups = await MeetUp.findAndCountAll({ where: filter, order: sort, limit, offset });
             return meetups;
         } catch (err) {
            throw err;
@@ -124,13 +61,12 @@ class MeetupService {
 
     async addMeetup(meetupDto: CreateMeetup, userId: number): Promise<MigrationMeetupResult> {
         try {
-            const {  time, date,  eventPlace, topic, description, keywords } = meetupDto;
-            const value = { time, date, event_place: eventPlace, userId, topic, description, keywords };
-            const meetup = await MeetUp.findOne({where: {event_place: eventPlace, date, time}});
+            const {  time, date,  place } = meetupDto;
+            const meetup = await MeetUp.findOne({where: {place, date, time}});
             if (meetup) {
                 throw ApiError.Conflict();
             }
-            const newMeetup = await MeetUp.create({...value}) as MigrationMeetupResult;
+            const newMeetup = await MeetUp.create({...meetupDto, userId}) as MigrationMeetupResult;
             return newMeetup;
         } catch (err) {
             throw err;
@@ -139,12 +75,12 @@ class MeetupService {
 
     async updateMeetup(meetupDto: UpdateMeetup): Promise<MeetupModelInstance> {
         try {
-           const { eventPlace, id, ...rest } = meetupDto;
+           const { id, ...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
            if (!meetup) {
                throw ApiError.NotFound();
            }
-           await meetup.update({...rest, event_place: eventPlace});
+           await meetup.update({...rest});
            await meetup.save();
            const updatedInstance = await MeetUp.findByPk(id) as UpdateMeetup;
            return updatedInstance;

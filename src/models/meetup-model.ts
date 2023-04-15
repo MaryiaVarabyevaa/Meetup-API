@@ -9,7 +9,7 @@ export const MeetUp = sequelize.define('meetup', {
     keywords: {type: DataTypes.STRING, allowNull: false},
     time: {type: DataTypes.STRING, allowNull: false},
     date: {type: DataTypes.DATEONLY, allowNull: false},
-    event_place: {type: DataTypes.STRING, allowNull: false},
+    place: {type: DataTypes.STRING, allowNull: false},
 }, { paranoid: true })
 
 MeetUp.addHook('afterCreate', (instance, options) => {

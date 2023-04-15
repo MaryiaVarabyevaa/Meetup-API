@@ -19,7 +19,7 @@ export default (data: CreateMeetup) => {
                 return value;
             })
             .required(),
-        eventPlace: Joi.string().min(2).max(255).required(),
+        place: Joi.string().min(2).max(255).required(),
     })
 
     return schema.validate(data);
