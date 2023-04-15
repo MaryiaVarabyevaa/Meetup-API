@@ -43,8 +43,9 @@ class MeetupController {
 
     async updateMeetup(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response>   {
         try {
-            const { role, accessingUserId, userId } = req.user;
-            if (role === UserRole.USER && accessingUserId !== userId) {
+            const { role, id } = req.user;
+            const {userId} = req.validatedData;
+            if (role === UserRole.USER && userId !== id) {
                 throw ApiError.Forbidden();
             }
             const updatedMeetup = await meetupService.updateMeetup(req.validatedData as UpdateMeetup);

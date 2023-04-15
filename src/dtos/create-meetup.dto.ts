@@ -6,7 +6,8 @@ export default (data: CreateMeetup) => {
         topic: Joi.string().min(2).max(255).required(),
         description: Joi.string().min(2).max(500).required(),
         keywords: Joi.string().min(2).max(255).required(),
-        eventTime: Joi.date().required(),
+        time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/).required(),
+        date: Joi.date().greater(Joi.ref('now')).required(),
         eventPlace: Joi.string().min(2).max(255).required(),
     })
 

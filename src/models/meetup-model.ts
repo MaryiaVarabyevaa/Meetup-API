@@ -7,7 +7,8 @@ export const MeetUp = sequelize.define('meetup', {
     topic: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING, allowNull: false},
     keywords: {type: DataTypes.STRING, allowNull: false},
-    event_time: {type: DataTypes.DATE, allowNull: false},
+    time: {type: DataTypes.STRING, allowNull: false},
+    date: {type: DataTypes.DATEONLY, allowNull: false},
     event_place: {type: DataTypes.STRING, allowNull: false},
 }, { paranoid: true })
 
@@ -26,7 +27,7 @@ MeetUp.addHook('afterFind', (result, options) => {
             delete item.dataValues.updatedAt;
         });
     }
-    if (result) {
+    if (result && !Array.isArray(result)) {
         delete result.dataValues.deletedAt;
         delete result.dataValues.createdAt;
         delete result.dataValues.updatedAt;
