@@ -5,6 +5,7 @@ import ApiError from "../exceptions/api-error";
 import TokenPayload from "../utils/jwtUtils";
 import {UserRole} from "../constants/userRoles";
 import {TokenPair} from "../types/TokenPair";
+import {ErrorMessages} from "../constants/errorMessages";
 
 const { User } = require('../models/user-model');
 
@@ -25,7 +26,7 @@ class UserService {
             const { email, password, firstName, lastName } = userDto;
             const candidate = await User.findOne({where: {email}});
             if (candidate) {
-                throw ApiError.BadRequest(`A user with ${email} email already exists`);
+                throw ApiError.Conflict(ErrorMessages.USER_CONFLICT);
             }
             const hashPassword = await bcrypt.hash(password, 3);
             const user = await User.create({email, password: hashPassword, first_name: firstName, last_name: lastName});
@@ -39,12 +40,12 @@ class UserService {
         try {
             const user = await User.findOne({where: {email}});
             if (!user) {
-                throw ApiError.BadRequest('Invalid email or password. Please check your credentials and try again.');
+                throw ApiError.UnauthorizedError(ErrorMessages.USER_INVALID_DATA);
             }
             const {password: userPassword} = user;
             const isPasswordEquals = await bcrypt.compare(password, userPassword as string);
             if (!isPasswordEquals) {
-                throw ApiError.BadRequest('Invalid email or password. Please check your credentials and try again.')
+                throw ApiError.UnauthorizedError(ErrorMessages.USER_INVALID_DATA);
             }
             return this.generateTokens(user);
         } catch (err) {
@@ -55,14 +56,13 @@ class UserService {
     async refresh(refreshToken: string): Promise<TokenPair> {
         try {
             if (!refreshToken) {
-                throw ApiError.UnauthorizedError();
+                throw ApiError.UnauthorizedError(ErrorMessages.INVALID_TOKEN);
             }
             const userData = tokenService.validateRefreshToken(refreshToken);
             const tokenFromDb = await tokenService.findToken(refreshToken);
             if (!userData || !tokenFromDb) {
-                throw ApiError.UnauthorizedError();
+                throw ApiError.UnauthorizedError(ErrorMessages.INVALID_TOKEN);
             }
-
             const user = await User.findOne({where: {id: userData.id}});
             return this.generateTokens(user);
         } catch (err) {
@@ -74,7 +74,7 @@ class UserService {
         try {
             const user = await User.findOne({where: {id}});
             if (!user) {
-                throw ApiError.NotFound();
+                throw ApiError.NotFound(ErrorMessages.USER_NOT_FOUND);
             }
             const { role} = user;
             const newRole = UserRole.USER === role? UserRole.ORGANIZER : UserRole.USER;

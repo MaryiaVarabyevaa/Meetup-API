@@ -8,8 +8,8 @@ import {FindAndCountAllResult} from "../types/FindAndCountAllResult";
 import {SortOptions} from "../constants/sortOptions";
 import {MeetupModelInstance} from "../types/MeetupModelInstance";
 import {MigrationMeetupResult} from "../types/MigrationMeetupResult";
-import getNowTime from "../utils/getNowTime";
 import getNowDate from "../utils/getNowDate";
+import {ErrorMessages} from "../constants/errorMessages";
 
 const { MeetUp } = require('../models/meetup-model');
 
@@ -51,7 +51,7 @@ class MeetupService {
                 where: {id},
             });
             if (!meetup) {
-                throw ApiError.NotFound();
+                throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
             }
             return meetup as MeetupModelInstance;
         } catch (err) {
@@ -64,7 +64,7 @@ class MeetupService {
             const {  time, date,  place } = meetupDto;
             const meetup = await MeetUp.findOne({where: {place, date, time}});
             if (meetup) {
-                throw ApiError.Conflict();
+                throw ApiError.Conflict(ErrorMessages.MEETUP_CONFLICT);
             }
             const newMeetup = await MeetUp.create({...meetupDto, userId}) as MigrationMeetupResult;
             return newMeetup;
@@ -78,7 +78,7 @@ class MeetupService {
            const { id, ...rest } = meetupDto;
            const meetup = await MeetUp.findOne({ where: {id} });
            if (!meetup) {
-               throw ApiError.NotFound();
+               throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
            }
            await meetup.update({...rest});
            await meetup.save();
@@ -93,11 +93,11 @@ class MeetupService {
        try {
            const meetup = await MeetUp.findOne({ where: {id} });
            if (!meetup) {
-               throw ApiError.NotFound();
+               throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
            }
            const { userId: organizerId } = meetup;
            if (organizerId !== userId) {
-               throw ApiError.Forbidden();
+               throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
            }
            await MeetUp.destroy({
                where: { id }

@@ -7,6 +7,7 @@ import {AuthenticatedRequest} from "../types/AuthenticatedRequest";
 import {CreateMeetup} from "../types/CreateMeetup";
 import {MeetUpSearchQuery} from "../types/MeetUpSearchQuery";
 import {UpdateMeetup} from "../types/UpdateMeetup";
+import {ErrorMessages} from "../constants/errorMessages";
 
 class MeetupController {
     async findAllMeetups(req: Request, res: Response, next: NextFunction): Promise<Response>   {
@@ -32,7 +33,7 @@ class MeetupController {
         try {
             const { role, id } = req.user;
             if (role === UserRole.USER) {
-                throw ApiError.Forbidden();
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
             const meetup = await meetupService.addMeetup(req.validatedData as CreateMeetup, id);
             return res.status(201).json(meetup);
@@ -46,7 +47,7 @@ class MeetupController {
             const { role, id } = req.user;
             const {userId} = req.validatedData;
             if (role === UserRole.USER && userId !== id) {
-                throw ApiError.Forbidden();
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
             const updatedMeetup = await meetupService.updateMeetup(req.validatedData as UpdateMeetup);
             return res.status(200).json(updatedMeetup);
@@ -59,7 +60,7 @@ class MeetupController {
         try {
             const { role, id } = req.user;
             if (role === UserRole.USER) {
-                throw ApiError.Forbidden();
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
             const deletedMeetup = await meetupService.deleteMeetup(req.body.id, id);
             return res.status(204).json(deletedMeetup);
