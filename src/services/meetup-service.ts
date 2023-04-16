@@ -18,27 +18,22 @@ class MeetupService {
         try {
             const { limit = SortOptions.LIMIT, page = SortOptions.PAGE } = queries;
             const offset = page * limit - limit;
-
             const sort = [];
-            // const filter = {date: {[Op.gte]: getNowDate()}, time:  {[Op.gte]: getNowTime()}};
             const filter = { date: {[Op.gte]: getNowDate()}}
-
             for (const [key, value] of Object.entries(queries)) {
-                if (key.startsWith('sort')) {
+                if (key.startsWith('sortBy')) {
                     sort.push([`${key.toLowerCase().slice(6)}`, value]);
                 }
-                if (key.startsWith('filter')) {
+                if (key.startsWith('filterBy')) {
                     if (key.endsWith('Keywords')) {
                         filter[key.toLowerCase().slice(8)] = {[Op.match]: Sequelize.fn('to_tsquery', value.split(',').join(' | '))};
                     } else {
                         filter[key.toLowerCase().slice(8)] = {[Op.eq]: value};
                     }
                 }
-
             }
-
             if (sort.length === 0) sort.push(['date', 'ASC'], ['time', 'ASC']);
-            const meetups = await MeetUp.findAndCountAll({ where: filter, order: sort, limit, offset });
+            const meetups = await MeetUp.findAndCountAll({ where: filter, order: sort, limit, offset }) as FindAndCountAllResult;
             return meetups;
         } catch (err) {
            throw err;
@@ -82,7 +77,7 @@ class MeetupService {
            }
            await meetup.update({...rest});
            await meetup.save();
-           const updatedInstance = await MeetUp.findByPk(id) as UpdateMeetup;
+           const updatedInstance = await MeetUp.findByPk(id) as MeetupModelInstance;
            return updatedInstance;
         } catch (err) {
             throw err;

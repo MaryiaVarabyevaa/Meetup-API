@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import {CreateMeetup} from "../types/CreateMeetup";
+import {ErrorMessages} from "../constants/errorMessages";
 
-const MESSAGE = 'Date should not be less than the current one';
 
 export default (data: CreateMeetup) => {
     const schema = Joi.object({
@@ -14,7 +14,7 @@ export default (data: CreateMeetup) => {
             .custom((value, helpers) => {
                 const currentDate = new Date().toISOString().substring(0, 10);
                 if (value < currentDate) {
-                    return helpers.message(MESSAGE);
+                    return helpers.message(ErrorMessages.VALIDATION_DATE_ERROR);
                 }
                 return value;
             })
