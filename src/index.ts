@@ -32,7 +32,7 @@ declare global {
 }
 
 app.use(express.json());
-app.use('/api', router);
+app.use('/', router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(errorMiddleware);
 
