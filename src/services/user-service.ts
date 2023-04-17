@@ -70,7 +70,7 @@ class UserService {
         }
     }
 
-    async changeUserRole(id: number): Promise<void> {
+    async changeUserRole(id: number): Promise<TokenPair> {
         try {
             const user = await User.findOne({where: {id}});
             if (!user) {
@@ -79,8 +79,8 @@ class UserService {
             const { role} = user;
             const newRole = UserRole.USER === role? UserRole.ORGANIZER : UserRole.USER;
             await user.update( { role: newRole });
-            await user.save();
-            return;
+            const updatedUser = await user.save();
+            return this.generateTokens(updatedUser);
         } catch (err) {
             throw err;
         }
