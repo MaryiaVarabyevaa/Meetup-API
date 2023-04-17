@@ -14,6 +14,30 @@
     "/meetup": {
       "get": {
         "summary": "Method of receiving meetups",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sortBy",
+            "description": "Sort items by one or more fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "sortByTopic"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterBy",
+            "description": "Filter items by one or more criteria",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "filterByPlace"
+            }
+          }
+        ],
         "description": "The method is designed to get all the current meetups stored in the database.",
         "operationId": "findAllMeetups",
         "tags": [
@@ -447,7 +471,6 @@
           },
           "date": {
             "type": "string",
-            "format": "YYYY-MM-DD",
             "example": "2023-05-05T00:00:00.000Z"
           },
           "place": {
