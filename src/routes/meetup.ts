@@ -9,10 +9,11 @@ const router = new Router();
 router.route('/')
     .get(meetupController.findAllMeetups)
     .post(authMiddleware, validateNewMeetUpMiddleware, meetupController.addMeetup)
-    .put(authMiddleware, validateMeetupUpdateMiddleware, meetupController.updateMeetup)
-    .delete(authMiddleware, meetupController.deleteMeetup);
+    .put(authMiddleware, validateMeetupUpdateMiddleware, meetupController.updateMeetup);
 
-router.get('/:id', meetupController.findMeetupById);
+router.route('/:id')
+    .get(meetupController.findMeetupById)
+    .delete(authMiddleware, meetupController.deleteMeetup);
 
 export default router;
 

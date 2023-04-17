@@ -62,7 +62,7 @@ class MeetupController {
             if (role === UserRole.USER) {
                 throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
-            const deletedMeetup = await meetupService.deleteMeetup(req.body.id, id);
+            const deletedMeetup = await meetupService.deleteMeetup(+req.params.id, id);
             return res.status(204).json(deletedMeetup);
         } catch (err) {
             next(err);
