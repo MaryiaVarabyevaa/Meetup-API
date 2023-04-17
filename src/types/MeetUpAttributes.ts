@@ -1,5 +1,3 @@
-import {Model} from "sequelize";
-
 export interface MeetUpAttributes {
     id?: number;
     topic: string;
@@ -12,4 +10,3 @@ export interface MeetUpAttributes {
     updatedAt?: Date;
     deletedAt?: Date;
 }
-export interface MeetUpInstance extends Model<MeetUpAttributes>, MeetUpAttributes {}

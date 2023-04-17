@@ -1,6 +1,6 @@
 import {DataTypes} from 'sequelize';
 import sequelize from '../db';
-import {AfterCreateHook} from "../types/AfterCreateHook";
+import {MeetupAfterCreateHook} from "../types/MeetupAfterCreateHook";
 
 
 export const MeetUp = sequelize.define('meetup', {
@@ -13,7 +13,7 @@ export const MeetUp = sequelize.define('meetup', {
     place: {type: DataTypes.STRING, allowNull: false},
 }, { paranoid: true });
 
-const afterCreateHook: AfterCreateHook = async (instance, options) => {
+const afterCreateHook: MeetupAfterCreateHook = async (instance, options) => {
     delete instance.dataValues.deletedAt;
     delete instance.dataValues.createdAt;
     delete instance.dataValues.updatedAt;
