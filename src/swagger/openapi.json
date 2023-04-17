@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://meetup-api-server.onrender.com",
+      "url": "http://localhost:5000/api",
       "description": "Development server"
     }
   ],
@@ -238,7 +238,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Successful deletion of a record of meetup from the database.",
             "content": {
               "application/json": {
