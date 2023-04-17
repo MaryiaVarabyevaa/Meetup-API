@@ -31,14 +31,12 @@ class MeetupController {
 
     async addMeetup(req: Request, res: Response, next: NextFunction): Promise<Response | void>   {
         try {
-            if (req.user) {
-                const { role, id } = req.user;
-                if (role === UserRole.USER) {
-                    throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
-                }
-                const meetup = await meetupService.addMeetup(req.validatedData as CreateMeetup, id);
-                return res.status(201).json(meetup);
+            const { role, id } = req.user;
+            if (role === UserRole.USER) {
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
+            const meetup = await meetupService.addMeetup(req.validatedData as CreateMeetup, id);
+            return res.status(201).json(meetup);
         } catch (err) {
             next(err);
             return;
@@ -47,15 +45,13 @@ class MeetupController {
 
     async updateMeetup(req: Request, res: Response, next: NextFunction): Promise<Response | void>   {
         try {
-            if (req.user && 'role' in req.user) {
-                const { role, id } = req.user;
-                const { userId } = req.validatedData as UpdateMeetup;
-                if (role === UserRole.USER && userId !== id) {
-                    throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
-                }
-                const updatedMeetup = await meetupService.updateMeetup(req.validatedData as UpdateMeetup);
-                return res.status(200).json(updatedMeetup);
+            const { role, id } = req.user;
+            const { userId } = req.validatedData as UpdateMeetup;
+            if (role === UserRole.USER && userId !== id) {
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
+            const updatedMeetup = await meetupService.updateMeetup(req.validatedData as UpdateMeetup);
+            return res.status(200).json(updatedMeetup);
         } catch (err) {
             next(err);
             return;
@@ -64,14 +60,12 @@ class MeetupController {
 
     async deleteMeetup(req: Request, res: Response, next: NextFunction): Promise<Response | void>   {
         try {
-            if (req['user']) {
-                const { role, id } = req['user'];
-                if (role === UserRole.USER) {
-                    throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
-                }
-                const deletedMeetup = await meetupService.deleteMeetup(+req.params.id, id);
-                return res.status(204).json(deletedMeetup);
+            const { role, id } = req.user;
+            if (role === UserRole.USER) {
+                throw ApiError.Forbidden(ErrorMessages.USER_FORBIDDEN);
             }
+            const deletedMeetup = await meetupService.deleteMeetup(+req.params.id, id);
+            return res.status(204).json(deletedMeetup);
         } catch (err) {
             next(err);
             return;
