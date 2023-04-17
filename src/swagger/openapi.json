@@ -17,24 +17,46 @@
         "parameters": [
           {
             "in": "query",
-            "name": "sortBy",
+            "name": "sortByTopic",
             "description": "Sort items by one or more fields",
             "required": false,
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "sortByTopic"
+              "example": "ASC"
             }
           },
           {
             "in": "query",
-            "name": "filterBy",
+            "name": "sortByDate",
+            "description": "Sort items by one or more fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "DESC"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterByPlace",
             "description": "Filter items by one or more criteria",
             "required": false,
             "explode": true,
             "schema": {
               "type": "string",
-              "example": "filterByPlace"
+              "example": "place 1"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterByKeywords",
+            "description": "Filter items by one or more criteria",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "str1,str2"
             }
           }
         ],
