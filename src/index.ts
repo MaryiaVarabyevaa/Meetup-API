@@ -9,10 +9,28 @@ import router from "./routes/index";
 import errorMiddleware from "./middlewares/error-middleware";
 import swaggerUi from 'swagger-ui-express';
 import * as swaggerDocument from '../src/swagger/openapi.json';
+import {CreateMeetup} from "./types/CreateMeetup";
+import {UpdateMeetup} from "./types/UpdateMeetup";
+import {CreateUser} from "./types/CreateUser";
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
+
+declare global {
+    namespace Express {
+        interface Request {
+            user: {
+                id: number;
+                role: string;
+                email: string;
+            };
+            validatedData: CreateMeetup | UpdateMeetup;
+            userValidatedData: CreateUser;
+        }
+    }
+}
+
 app.use(express.json());
 app.use('/api', router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

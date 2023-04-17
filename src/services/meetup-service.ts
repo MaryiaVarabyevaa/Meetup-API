@@ -19,7 +19,7 @@ class MeetupService {
             const { limit = SortOptions.LIMIT, page = SortOptions.PAGE } = queries;
             const offset = page * limit - limit;
             const sort = [];
-            const filter = { date: {[Op.gte]: getNowDate()}}
+            const filter: { [key: string]: object } = { date: {[Op.gte]: getNowDate()}}
             for (const [key, value] of Object.entries(queries)) {
                 if (key.startsWith('sortBy')) {
                     sort.push([`${key.toLowerCase().slice(6)}`, value]);

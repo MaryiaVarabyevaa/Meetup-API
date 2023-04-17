@@ -15,7 +15,7 @@ export default (data: UpdateMeetup) => {
             .custom((value, helpers) => {
                 const currentDate = new Date().toISOString().substring(0, 10);
                 if (value < currentDate) {
-                    return helpers.message(ErrorMessages.VALIDATION_DATE_ERROR);
+                    return helpers.message({ 'custom.VALIDATION_DATE_ERROR': ErrorMessages.VALIDATION_DATE_ERROR });
                 }
                 return value;
             })

@@ -4,7 +4,7 @@ import validateNewMeetUpMiddleware from "../middlewares/validateNewMeetUp-middle
 import validateMeetupUpdateMiddleware from "../middlewares/validateMeetupUpdate-middleware";
 import authMiddleware from "../middlewares/auth-middleware";
 
-const router = new Router();
+const router: Router = new Router();
 
 router.route('/')
     .get(meetupController.findAllMeetups)

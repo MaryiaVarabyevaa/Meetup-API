@@ -1,9 +1,8 @@
-import {NextFunction, Response} from "express";
+import {NextFunction, RequestHandler, Response, Request} from "express";
 import CreateMeetupDto from "../dtos/create-meetup.dto";
-import {AuthenticatedRequest} from "../types/AuthenticatedRequest";
 
 
-export default (req:AuthenticatedRequest, res: Response, next: NextFunction): void => {
+const validateNewMeetUpMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction): void => {
     const { error, value } = CreateMeetupDto(req.body);
     if (error) {
         res.status(400).json({message: error});
@@ -12,3 +11,5 @@ export default (req:AuthenticatedRequest, res: Response, next: NextFunction): vo
         next();
     }
 }
+
+export default validateNewMeetUpMiddleware;

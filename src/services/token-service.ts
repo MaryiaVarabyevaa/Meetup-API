@@ -8,8 +8,8 @@ const { Token } = require('../models/token-model');
 class TokenService {
     generateToken(payload: TokenPayload): TokenPair {
         try {
-            const accessToken = jwt.sign(payload, process.env.JWT_ACCCESS_SECRET, { expiresIn: '30m' });
-            const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+            const accessToken = jwt.sign(payload, process.env.JWT_ACCCESS_SECRET || '', { expiresIn: '30m' });
+            const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET || '', { expiresIn: '30d' });
             return {
                 accessToken,
                 refreshToken
@@ -21,7 +21,7 @@ class TokenService {
 
     validateAccessToken(token: string): TokenPayload | null {
         try {
-            const userData = jwt.verify(token, process.env.JWT_ACCCESS_SECRET) as JwtPayload;
+            const userData = jwt.verify(token, process.env.JWT_ACCCESS_SECRET as string) as JwtPayload;
             const { id, email, role } = userData;
             return { id, email, role };
         } catch (e) {
@@ -31,7 +31,7 @@ class TokenService {
 
     validateRefreshToken(token: string): TokenPayload | null {
         try {
-            const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET) as JwtPayload;
+            const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET as string) as JwtPayload;
             const { id, email, role } = userData;
             return { id, email, role };
         } catch (e) {
@@ -39,7 +39,7 @@ class TokenService {
         }
     }
 
-    async saveToken(userId, refreshToken): Promise<MigrationTokenResult | void> {
+    async saveToken(userId: number, refreshToken: string): Promise<MigrationTokenResult | void> {
         try {
             const tokenData = await Token.findOne({where: {userId}});
             // для обновления refresh_token в бд

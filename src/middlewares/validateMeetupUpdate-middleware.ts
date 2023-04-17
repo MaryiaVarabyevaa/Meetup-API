@@ -1,13 +1,15 @@
-import { Response, NextFunction } from 'express';
+import {NextFunction, Request, RequestHandler, Response} from 'express';
 import UpdateMeetupDto from "../dtos/update-meetup.dto";
-import {AuthenticatedRequest} from "../types/AuthenticatedRequest";
+import {UpdateMeetup} from "../types/UpdateMeetup";
 
-export default (req:AuthenticatedRequest, res: Response, next: NextFunction): void => {
-    const { error, value } = UpdateMeetupDto(req.body);
+const validateMeetupUpdateMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+    const { error, value } = UpdateMeetupDto(req.body as UpdateMeetup);
     if (error) {
-        res.status(400).json({message: 'One or more fields in the request body are invalid.'});
+        res.status(400).json({ message: 'One or more fields in the request body are invalid.' });
     } else {
-        req.validatedData = {...value};
+        req['validatedData'] = { ...value };
         next();
     }
-}
+};
+
+export default validateMeetupUpdateMiddleware;

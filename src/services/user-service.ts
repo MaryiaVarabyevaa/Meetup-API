@@ -6,11 +6,12 @@ import TokenPayload from "../utils/jwtUtils";
 import {UserRole} from "../constants/userRoles";
 import {TokenPair} from "../types/TokenPair";
 import {ErrorMessages} from "../constants/errorMessages";
+import {UserType} from "../types/User";
 
 const { User } = require('../models/user-model');
 
 class UserService {
-    private async generateTokens(user): Promise<TokenPair> {
+    private async generateTokens(user: UserType): Promise<TokenPair> {
         try {
             const payload = new TokenPayload(user);
             const tokens = tokenService.generateToken({...payload});

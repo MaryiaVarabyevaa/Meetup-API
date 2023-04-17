@@ -1,11 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import userService from "../services/user-service";
-import {NextFunction} from "express";
-import {AuthenticatedRequest} from "../types/AuthenticatedRequest";
 import {CreateUser} from "../types/CreateUser";
 
 class UserController {
-    async registration(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response> {
+    async registration(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const userData = await userService.registration(req.userValidatedData as CreateUser);
             // срок хранения куки 30 дней
@@ -13,10 +11,11 @@ class UserController {
             return res.status(201).json(userData);
         } catch (err) {
             next(err);
+            return;
         }
     }
 
-    async login(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const {email, password} = req.body;
             const userData = await userService.login(email, password);
@@ -24,10 +23,11 @@ class UserController {
             return res.status(200).json(userData);
         } catch (err) {
             next(err);
+            return;
         }
     }
 
-    async refresh(req: Request, res: Response, next: NextFunction): Promise<Response>  {
+    async refresh(req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
         try {
             const { refreshToken } = req.cookies;
             const userData = await userService.refresh(refreshToken);
@@ -35,16 +35,18 @@ class UserController {
             return res.status(200).json(userData);
         } catch (err) {
             next(err);
+            return;
         }
     }
 
-    async changeUserRole(req: Request, res: Response, next: NextFunction): Promise<Response>  {
+    async changeUserRole(req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
         try {
             const { id } = req.params;
             const organizer = await userService.changeUserRole(+id);
             return res.status(200).json(organizer);
         } catch (err) {
             next(err);
+            return;
         }
     }
 }
