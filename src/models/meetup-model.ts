@@ -37,6 +37,4 @@ MeetUp.addHook('afterFind', (result, options) => {
     }
 });
 
-module.exports ={
-    MeetUp
-}
+export default MeetUp;

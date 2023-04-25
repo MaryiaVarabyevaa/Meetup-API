@@ -1,6 +1,6 @@
 import express from 'express';
-import meetup from "./meetup";
-import user from "./user";
+import meetup from './meetup';
+import user from './user';
 
 const router = express.Router();
 

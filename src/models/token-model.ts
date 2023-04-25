@@ -24,6 +24,4 @@ const afterFindHook = async (result: Model<TokenAttributes, TokenAttributes>, op
 Token.addHook('afterCreate', afterCreateHook);
 Token.addHook('afterFind', afterFindHook);
 
-module.exports = {
-    Token
-}
+export default Token;
