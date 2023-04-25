@@ -1,18 +1,30 @@
 {
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "env": {
     "es6": true,
     "node": true
   },
-  "extends": [
-    "airbnb-base"
-  ],
-  "plugins": [
-    "import",
-    "node",
-    "promise"
-  ],
   "rules": {
     "no-console": "off",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["off", { "argsIgnorePattern": "^myVar$" }],
+    "require-yield": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
   }
 }
+//module.exports = {
+//  parser: '@typescript-eslint/parser',
+//  plugins: ['@typescript-eslint'],
+//  extends: [
+//    'eslint:recommended',
+//    'plugin:@typescript-eslint/recommended'
+//  ],
+//  rules: {
+//    // Add any additional rules or overrides here
+//  }
+//};

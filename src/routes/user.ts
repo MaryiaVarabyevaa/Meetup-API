@@ -1,6 +1,6 @@
 import express from 'express';
-import userController from "../controllers/user-controller";
-import validateRegistrationMiddleware from "../middlewares/validateRegistration-middleware";
+import userController from '../controllers/user-controller';
+import validateRegistrationMiddleware from '../middlewares/validateRegistration-middleware';
 
 const router = express.Router();
 
@@ -8,6 +8,5 @@ router.post('/registration', validateRegistrationMiddleware, userController.regi
 router.post('/login', userController.login);
 router.get('/refresh', userController.refresh);
 router.put('/:id/role', userController.changeUserRole);
-
 
 export default router;
