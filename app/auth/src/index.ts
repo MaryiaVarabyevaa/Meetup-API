@@ -2,17 +2,16 @@ import dotenv from 'dotenv';
 import express from 'express';
 import sequelize from './db/db';
 import User from './db/models/user-model';
+import router from "./routes";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 const app = express();
 
-app.get('/', (req, res) => {
-  console.log(req);
-  res.send('Hello, world from auth!');
-});
+app.use(express.json());
+app.use('/', router);
 
 const start = async () => {
   try {
