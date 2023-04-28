@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import sequelize from './db/db';
+import Meetup from './db/models/meetup-model';
 
 dotenv.config();
 
@@ -12,6 +14,15 @@ app.get('/', (req, res) => {
   res.send('Hello, world meetup!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+const start = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true }).then(() => {
+      console.log('Database tables created.');
+    });
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  } catch (e) {
+    console.log(e);
+  }
+};
+start();
