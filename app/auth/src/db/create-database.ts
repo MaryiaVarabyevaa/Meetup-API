@@ -5,8 +5,8 @@ dotenv.config();
 
 async function createDatabase() {
   try {
-    console.log(`Creating database ${process.env.DB_NAME}...`);
-    await sequelize.query(`CREATE DATABASE ${process.env.DB_NAME}`);
+    console.log(`Creating database ${process.env.POSTGRES_DB}...`);
+    await sequelize.query(`CREATE DATABASE ${process.env.POSTGRES_DB}`);
     console.log(`Database ${process.env.DB_NAME} created successfully`);
   } catch (error) {
     console.error(`Unable to create database: ${error}`);
