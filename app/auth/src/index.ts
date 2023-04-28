@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
-import express from 'express';
-
 dotenv.config();
+import express from 'express';
+import sequelize from './models/db';
+import User from './models/auth-model';
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,6 +14,16 @@ app.get('/', (req, res) => {
   res.send('Hello, world from auth!');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+const start = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true }).then(() => {
+      console.log('Database tables created.');
+    });
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+  } catch (e) {
+    console.log(e);
+  }
+
+};
+start();
