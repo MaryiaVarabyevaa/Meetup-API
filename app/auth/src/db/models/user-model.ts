@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from './db';
+import sequelize from '../db';
 
 export const User = sequelize.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },

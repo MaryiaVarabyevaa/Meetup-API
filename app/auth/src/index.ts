@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
-import sequelize from './models/db';
-import User from './models/auth-model';
+import sequelize from './db/db';
+import User from './db/models/user-model';
 
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
@@ -24,6 +24,5 @@ const start = async () => {
   } catch (e) {
     console.log(e);
   }
-
 };
 start();
