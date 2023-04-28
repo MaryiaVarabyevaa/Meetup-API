@@ -1,12 +1,17 @@
+import dotenv from 'dotenv';
 import express from 'express';
+
+dotenv.config();
+
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
 app.get('/', (req, res) => {
-    res.send('Hello, world!');
+  console.log(req);
+  res.send('Hello, world meetup!');
 });
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
 });

@@ -1,29 +1,30 @@
 version: '3'
 
 services:
-  auth:
-    build: ./auth
-    ports:
-      - '3000:3000'
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_HOST: kafka:9092
-
   meetup:
-    build: ./meetup
+    container_name: meetup
+    build:
+      context: ./meetup
     ports:
-      - '4000:4000'
+      - "5000:5000"
     depends_on:
-      - kafka
-    environment:
-      KAFKA_HOST: kafka:9092
+      - auth
+    env_file:
+      - ./meetup/.env
+    networks:
+      - mynetwork
 
-  kafka:
-    image: wurstmeister/kafka
+  auth:
+    container_name: auth
+    build:
+      context: ./auth
     ports:
-      - '2181:2181'
-      - '9092:9092'
-    environment:
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_CREATE_TOPICS: 'auth-events:1:1'
+      - "4000:4000"
+    env_file:
+      - ./auth/.env
+    networks:
+      - mynetwork
+
+
+networks:
+  mynetwork:

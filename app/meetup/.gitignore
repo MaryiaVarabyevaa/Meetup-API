@@ -1,6 +1,6 @@
 /dist
 /node_modules
-.eslintrc
+.eslintrc.json
 
 # Logs
 logs
