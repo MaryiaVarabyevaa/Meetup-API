@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
-    "db:create": "ts-node src/db/create-database.ts",
+    "db:create": "ts-node src/db/create-db.ts",
     "db:migrate": "npx sequelize-cli db:migrate",
     "lint": "eslint . --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix"

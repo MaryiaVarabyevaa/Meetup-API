@@ -3,7 +3,7 @@ import sequelize from './db';
 
 dotenv.config();
 
-async function createDatabase() {
+async function createDb() {
   try {
     console.log(`Creating database ${process.env.POSTGRES_DB}...`);
     await sequelize.query(`CREATE DATABASE ${process.env.POSTGRES_DB}`);
@@ -15,4 +15,4 @@ async function createDatabase() {
   }
 }
 
-createDatabase();
+createDb();
