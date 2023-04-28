@@ -9,8 +9,26 @@ services:
       - "5000:5000"
     depends_on:
       - auth
+      - meetup-db
     env_file:
       - ./meetup/.env
+    networks:
+      - mynetwork
+
+
+  meetup-db:
+    container_name: meetup-db
+    image: postgres:latest
+    restart: always
+    env_file:
+      - ./meetup/.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres-db-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5433
     networks:
       - mynetwork
 
@@ -48,3 +66,4 @@ volumes:
 
 networks:
   mynetwork:
+    driver: bridge
