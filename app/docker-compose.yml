@@ -24,7 +24,27 @@ services:
       - ./auth/.env
     networks:
       - mynetwork
+    depends_on:
+      - auth-db
 
+  auth-db:
+    container_name: auth-db
+    image: postgres:latest
+    restart: always
+    env_file:
+      - ./auth/.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres-db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - mynetwork
+
+volumes:
+  postgres-db-data:
 
 networks:
   mynetwork:
