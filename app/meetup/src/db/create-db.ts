@@ -4,14 +4,14 @@ import sequelize from './db';
 dotenv.config();
 
 async function createDb() {
-    try {
-        await sequelize.query(`CREATE DATABASE ${process.env.POSTGRES_DB}`);
-        console.log(`Database ${process.env.DB_NAME} created successfully`);
-    } catch (error) {
-        console.error(`Unable to create database: ${error}`);
-    } finally {
-        await sequelize.close();
-    }
+  try {
+    await sequelize.query(`CREATE DATABASE ${process.env.POSTGRES_DB}`);
+    console.log(`Database ${process.env.DB_NAME} created successfully`);
+  } catch (error) {
+    console.error(`Unable to create database: ${error}`);
+  } finally {
+    await sequelize.close();
+  }
 }
 
 createDb();
