@@ -1,0 +1,621 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Meetup API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/meetup": {
+      "get": {
+        "summary": "Method of receiving meetups",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sortByTopic",
+            "description": "Sort items by one or more fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "ASC"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortByDate",
+            "description": "Sort items by one or more fields",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "DESC"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterByPlace",
+            "description": "Filter items by one or more criteria",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "place 1"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filterByKeywords",
+            "description": "Filter items by one or more criteria",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "str1,str2"
+            }
+          }
+        ],
+        "description": "The method is designed to get all the current meetups stored in the database.",
+        "operationId": "findAllMeetups",
+        "tags": [
+          "Meetup"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with a list of relevant meetups",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Meetup"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Method for adding a new meetup",
+        "description": "The method is designed to add a new meetup in the database.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "addMeetup",
+        "tags": [
+          "Meetup"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMeetup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful creation of a new meetup",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meetup"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The function you are trying to access is not available for your current role or ID.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The record of meetup you are trying to create already exists in the database.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Method for updating information of meetup.",
+        "description": "The method is designed to update information about an already created meetup.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "updateMeetup",
+        "tags": [
+          "Meetup"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json;charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/Meetup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful updating of a new meetpup",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meetup"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The function you are trying to access is not available for your current role or ID.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The meetup with the ID you provided does not exist in the database.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/meetup/{id}": {
+      "get": {
+        "summary": "Method of getting a meetup by ID",
+        "description": "The method is intended for obtaining meetup data from the database.",
+        "operationId": "findMeetupById",
+        "tags": [
+          "Meetup"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID meetup",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meetup",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meetup"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Invalid input data. Returns status code and error message.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Method of removing meetup by ID",
+        "description": "The method is intended for deleting meetup in the database.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "operationId": "deleteMeetup",
+        "tags": [
+          "Meetup"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID meetup",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful deletion of a record of meetup from the database.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The function you are trying to access is not available for your current role or ID.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The meetup with the ID you provided does not exist in the database.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/registration": {
+      "post": {
+        "summary": "Method for adding a new user",
+        "description": "The method is designed to add a new user in the database.",
+        "operationId": "registration",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json;charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/Registration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful adding a new user",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The email address you are trying to register with is already associated with an existing account in the system.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "Login method",
+        "description": "The method is intended for users to log in to the system.",
+        "operationId": "login",
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json;charset=UTF-8": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful login",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid email or password. Please check your credentials and try again.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/refresh": {
+      "get": {
+        "summary": "Token update method",
+        "description": "The method is intended for updating the access token.",
+        "operationId": "refresh",
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful token update",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/role": {
+      "put": {
+        "summary": "Update user role",
+        "description": "Updates the role of a user with a specific ID.",
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User role updated successfully",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user you are trying to access or perform an action on could not be found in the system.",
+            "content": {
+              "application/json;charset=UTF-8": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Meetup": {
+        "type": "object",
+        "required": [
+          "id",
+          "topic",
+          "description",
+          "keywords",
+          "time",
+          "date",
+          "place",
+          "userId"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "topic": {
+            "type": "string",
+            "example": "Forum of Young Entrepreneurs"
+          },
+          "description": {
+            "type": "string",
+            "example": "The Forum is a place where you will immerse yourself in the world of entrepreneurship, find business partners and mentors, get acquainted with the best business practices and meet successful entrepreneurs of Belarus"
+          },
+          "keywords": {
+            "type": "string",
+            "example": "Entrepreneurship Startups Innovation"
+          },
+          "time": {
+            "type": "string",
+            "format": "HH:MM:SS",
+            "example": "17:00:00"
+          },
+          "date": {
+            "type": "string",
+            "example": "2023-05-05T00:00:00.000Z"
+          },
+          "place": {
+            "type": "string",
+            "example": "avenue. Winners, 20, building 2"
+          },
+          "userId": {
+            "type": "number",
+            "example": 5
+          }
+        }
+      },
+      "CreateMeetup": {
+        "type": "object",
+        "required": [
+          "topic",
+          "description",
+          "keywords",
+          "time",
+          "date",
+          "place"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "example": "Forum of Young Entrepreneurs"
+          },
+          "description": {
+            "type": "string",
+            "example": "The Forum is a place where you will immerse yourself in the world of entrepreneurship, find business partners and mentors, get acquainted with the best business practices and meet successful entrepreneurs of Belarus"
+          },
+          "keywords": {
+            "type": "string",
+            "example": "Entrepreneurship Startups Innovation"
+          },
+          "time": {
+            "type": "string",
+            "format": "HH:MM:SS",
+            "example": "17:00:00"
+          },
+          "date": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "example": "2023-05-05T00:00:00.000Z"
+          },
+          "place": {
+            "type": "string",
+            "example": "avenue. Winners, 20, building 2"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "Masha"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Varabyova"
+          },
+          "email": {
+            "type": "string",
+            "example": "masha@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "user"
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "masha@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "user"
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "required": [
+          "refreshToken",
+          "accessToken"
+        ],
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXNoYW1hc2hhMEBtYWlsLnJ1Iiwicm9sZSI6Ik9SR0FOSVpFUiIsImlhdCI6MTY4MTcxMTM4MywiZXhwIjoxNjgxNzEzMTgzfQ.N76blNCqBNJgQtHcCrihzY3Rt-iSvaT-yzUzYr2B0Us"
+          },
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXNoYW1hc2hhMEBtYWlsLnJ1Iiwicm9sZSI6Ik9SR0FOSVpFUiIsImlhdCI6MTY4MTcxMTM4MywiZXhwIjoxNjg0MzAzMzgzfQ.2Z96ssZa_qrXltoI0Q0H5Ljo-R4JGgGguTAqWhW3NAE"
+          }
+        }
+      }
+    }
+  }
+}
