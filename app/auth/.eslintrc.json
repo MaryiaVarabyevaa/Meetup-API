@@ -6,13 +6,20 @@
   "plugins": [
     "import"
   ],
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "package-lock.json"
+  ],
   "rules": {
     "indent": ["error", 2],
     "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "always"],
     "comma-dangle": ["error", "always-multiline"],
     "no-console": "warn",
+    "no-unused-vars": "off",
     "no-underscore-dangle": "off",
+    "@typescript-eslint/no-unused-vars": "off",
     "import/extensions": ["error", "ignorePackages", {
       "js": "never",
       "ts": "never"
