@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import sequelize from './db/db';
 import Meetup from './db/models/meetup-model';
+import router from "./routes";
 
 dotenv.config();
 
@@ -9,10 +10,8 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
-app.get('/', (req, res) => {
-  console.log(req);
-  res.send('Hello, world meetup!');
-});
+app.use(express.json());
+app.use('/', router);
 
 const start = async () => {
   try {
