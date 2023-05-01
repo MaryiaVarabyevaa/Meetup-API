@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db';
+import Token from "./token-model";
 
 export const User = sequelize.define('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -9,3 +10,6 @@ export const User = sequelize.define('user', {
   password: { type: DataTypes.STRING, allowNull: false },
   role: { type: DataTypes.STRING, defaultValue: 'USER' },
 });
+
+User.hasOne(Token);
+Token.belongsTo(User);

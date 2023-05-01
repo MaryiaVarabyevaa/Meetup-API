@@ -1,5 +1,6 @@
 import jwt, {JwtPayload} from 'jsonwebtoken';
-import Token from "../models/token-model";
+import Token from "../db/models/token-model";
+
 
 class TokenService {
   generateToken(payload) {
