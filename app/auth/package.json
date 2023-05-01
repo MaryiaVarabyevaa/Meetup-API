@@ -9,9 +9,7 @@
     "db:create": "ts-node src/db/create-db.ts",
     "db:migrate": "npx sequelize-cli db:migrate",
     "lint": "eslint . --ext .js,.ts",
-    "lint:fix": "npm run lint -- --fix",
-    "prettier": "prettier --write ./src/**/*.ts",
-    "prettier:fix": "echo fixing Prettier formatting"
+    "lint:fix": "npm run lint -- --fix"
   },
   "keywords": [
     "express",
@@ -21,8 +19,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/sequelize": "^4.28.14",
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
+    "kafka-node": "^5.0.0",
+    "kafkajs": "^2.2.4",
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.31.0",

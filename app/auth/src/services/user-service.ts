@@ -1,14 +1,64 @@
+import bcrypt from 'bcrypt';
 import { User } from '../db/models/user-model';
+import { ErrorMessages } from "../constants/errorMessages";
+import ApiError from "../exceptions/api-error";
+import { UserRoles } from "../constants/UserRoles";
 
 class UserService {
-  async registration(obj: any) {
-    const { firstName, lastName, ...rest } = obj;
-    const user = await User.create({
-      first_name: firstName,
-      last_name: lastName,
-      ...rest
-    });
-    return user;
+  private async generateTokens(user) {
+    const payload = new TokenPayload(user);
+    const tokens = tokenService.generateToken({...payload});
+    await tokenService.saveToken(user.id, tokens.refreshToken);
+    return { ...tokens };
+  }
+
+  async registration(userDto) {
+    const { email, password, firstName, lastName } = userDto;
+    const candidate = await User.findOne({where: {email}});
+    if (candidate) {
+      throw ApiError.Conflict(ErrorMessages.USER_CONFLICT);
+    }
+    const hashPassword = await bcrypt.hash(password, 3);
+    const user = await User.create({email, password: hashPassword, first_name: firstName, last_name: lastName});
+    return this.generateTokens(user);
+  }
+
+  async login(email: string, password: string) {
+    const user = await User.findOne({where: {email}});
+    if (!user) {
+      throw ApiError.UnauthorizedError(ErrorMessages.USER_INVALID_DATA);
+    }
+    const {password: userPassword} = user;
+    const isPasswordEquals = await bcrypt.compare(password, userPassword as string);
+    if (!isPasswordEquals) {
+      throw ApiError.UnauthorizedError(ErrorMessages.USER_INVALID_DATA);
+    }
+    return this.generateTokens(user);
+  }
+
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedError(ErrorMessages.INVALID_TOKEN);
+    }
+    const userData = tokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await tokenService.findToken(refreshToken);
+    if (!userData || !tokenFromDb) {
+      throw ApiError.UnauthorizedError(ErrorMessages.INVALID_TOKEN);
+    }
+    const user = await User.findOne({where: {id: userData.id}});
+    return this.generateTokens(user);
+  }
+
+  async changeUserRole(id: number) {
+    const user = await User.findOne({where: {id}});
+    if (!user) {
+      throw ApiError.NotFound(ErrorMessages.USER_NOT_FOUND);
+    }
+    const { role } = user;
+    const newRole = UserRoles.USER === role? UserRoles.ORGANIZER : UserRoles.USER;
+    await user.update( { role: newRole });
+    const updatedUser = await user.save();
+    return this.generateTokens(updatedUser);
   }
 }
 
