@@ -1,4 +1,6 @@
 import { MeetUp } from "../db/models/meetup-model";
+import { ErrorMessages } from "../constants/errorMessages";
+import ApiError from "../exceptions/api-error";
 
 class MeetupService {
   async findAllMeetups() {
@@ -11,7 +13,7 @@ class MeetupService {
       where: {id},
     });
     if (!meetup) {
-      // throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
+      throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
     }
     return meetup;
   }
@@ -21,7 +23,7 @@ class MeetupService {
     const {  time, date,  place } = meetupDto;
     const meetup = await MeetUp.findOne({where: {place, date, time}});
     if (meetup) {
-      // throw ApiError.Conflict(ErrorMessages.MEETUP_CONFLICT);
+      throw ApiError.Conflict(ErrorMessages.MEETUP_CONFLICT);
     }
     const newMeetup = await MeetUp.create({...meetupDto, userId});
     return newMeetup;
@@ -31,7 +33,7 @@ class MeetupService {
     const { id, ...rest } = meetupDto;
     const meetup = await MeetUp.findOne({ where: {id} });
     if (!meetup) {
-      // throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
+      throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
     }
     await meetup!.update({...rest});
     await meetup!.save();
@@ -42,7 +44,7 @@ class MeetupService {
   async deleteMeetup(id: number, userId: number) {
     const meetup = await MeetUp.findOne({ where: {id} });
     if (!meetup) {
-      // throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
+      throw ApiError.NotFound(ErrorMessages.MEETUP_NOT_FOUNT);
     }
     await MeetUp.destroy({
       where: { id }
