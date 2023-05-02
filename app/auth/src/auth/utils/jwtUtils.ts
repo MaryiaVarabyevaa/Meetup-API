@@ -1,6 +1,6 @@
 import { User } from "../types/user.type";
 
-export default class TokenPayload {
+class TokenPayload {
   id: number;
   email: string;
   role: string;
@@ -11,3 +11,5 @@ export default class TokenPayload {
     this.role = body.role;
   }
 }
+
+export { TokenPayload }
