@@ -1,12 +1,12 @@
-import { Request, Response, NextFunction } from "express";
-import UserService from "./user.service";
-import { StatusCodes } from "./constants/statusCodes";
+import { Request, Response, NextFunction } from 'express';
+import UserService from './user.service';
+import { StatusCodes } from './constants/statusCodes';
 
 class UserController {
   async changeUserRole(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const user =  await UserService.changeUserRole(+id);
+      const user = await UserService.changeUserRole(+id);
       return res.status(StatusCodes.OK).json(user);
     } catch (err) {
       next(err);

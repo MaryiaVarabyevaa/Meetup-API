@@ -19,7 +19,12 @@ class AuthService {
       throw Error("Ops");
     }
     const hashPassword = await bcrypt.hash(password, 3);
-    const user = await prisma.user.create({ ...rest, password: hashPassword, email });
+    const user = await prisma.user.create({ data: { ...rest, password: hashPassword, email } });
+    return this.generateTokens(user);
+  }
+
+  async signupWithGoogle(userDto): Promise<TokenPair>  {
+    const user = await prisma.user.create({ data: {...userDto} });
     return this.generateTokens(user);
   }
 
@@ -34,6 +39,16 @@ class AuthService {
       throw Error("Ops");
     }
     return this.generateTokens(user);
+  }
+
+  async loginWithGoogle(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    return this.generateTokens(user);
+  }
+
+  async logout(refreshToken: string) {
+    const token = await tokenService.removeRefreshToken(refreshToken);
+    return token;
   }
 
   async refresh(refreshToken: string): Promise<TokenPair> {

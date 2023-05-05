@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.put('/:id/role', userController.changeUserRole);
 
-export default router;
+export { router };

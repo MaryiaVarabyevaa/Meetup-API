@@ -1,15 +1,18 @@
+import dotenv from "dotenv";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { TokenPayload } from './types/tokenPayload.type';
 import { TokenPair } from './types/tokenPair.type';
 import { prisma } from "../db";
 import { Token } from "./types/token.type";
 
+dotenv.config();
+
 class TokenService {
   generateToken(payload: TokenPayload): TokenPair {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCCESS_SECRET || '', {
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET!, {
       expiresIn: '30m'
     });
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET || '', {
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
       expiresIn: '30d'
     });
     return {
@@ -19,7 +22,7 @@ class TokenService {
   }
 
   validateAccessToken(token: string): TokenPayload {
-    const userData = jwt.verify(token, process.env.JWT_ACCCESS_SECRET!) as JwtPayload;
+    const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as JwtPayload;
     const { id, email, role } = userData;
     return { id, email, role };
   }
@@ -50,6 +53,11 @@ class TokenService {
 
   async findRefreshToken(refreshToken: string): Promise<Token | null> {
     const tokenData = prisma.token.findUnique({ where: { refreshToken } });
+    return tokenData;
+  }
+
+  async removeRefreshToken(refreshToken: string) {
+    const tokenData = prisma.token.delete({ where: { refreshToken } });
     return tokenData;
   }
 }

@@ -12,9 +12,15 @@ model User {
   firstName String
   lastName  String
   email     String   @unique
-  password  String
+  password  String?
+  provider  Provider?   @default(LOCAL)
   role      UserRole?   @default(USER)
   token     Token?
+}
+
+enum Provider {
+  LOCAL
+  GMAIL
 }
 
 enum UserRole {
