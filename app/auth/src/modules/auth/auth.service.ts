@@ -1,19 +1,21 @@
 import bcrypt from 'bcrypt';
 import { prisma } from '../../db';
-import { TokenPair } from '../token/types/tokenPair.type';
 import { TokenPayload } from './utils/jwtUtils';
 import tokenService from '../token/token.service';
 import { ApiExceptions } from '../../exceptions';
+import { OauthUserDto, UserDto } from "./dtos";
+import { User } from "./types";
+import { Token, TokenPair } from "../token/types";
 
 class AuthService {
-  private async generateTokens(user): Promise<TokenPair> {
+  private async generateTokens(user: User): Promise<TokenPair> {
     const payload = new TokenPayload(user);
     const tokens = tokenService.generateToken({ ...payload });
     await tokenService.saveRefreshToken(user.id, tokens.refreshToken);
     return { ...tokens };
   }
 
-  async signup(userDto): Promise<TokenPair> {
+  async signup(userDto: UserDto): Promise<TokenPair> {
     const { email, password, ...rest } = userDto;
     const candidate = await prisma.user.findUnique({ where: { email } });
     if (candidate) {
@@ -24,7 +26,7 @@ class AuthService {
     return this.generateTokens(user);
   }
 
-  async signupWithGoogle(userDto): Promise<TokenPair> {
+  async signupWithGoogle(userDto: OauthUserDto): Promise<TokenPair> {
     const user = await prisma.user.create({ data: { ...userDto } });
     return this.generateTokens(user);
   }
@@ -42,13 +44,14 @@ class AuthService {
     return this.generateTokens(user);
   }
 
-  async loginWithGoogle(email: string) {
+  async loginWithGoogle(email: string): Promise<TokenPair> {
     const user = await prisma.user.findUnique({ where: { email } });
-    return this.generateTokens(user);
+    return this.generateTokens(user!);
   }
 
-  async logout(refreshToken: string) {
+  async logout(refreshToken: string): Promise<Token> {
     const token = await tokenService.removeRefreshToken(refreshToken);
+    console.log(token);
     return token;
   }
 
@@ -61,8 +64,8 @@ class AuthService {
     if (!userData || !tokenFromDb) {
       throw ApiExceptions.UnauthorizedError();
     }
-    const user = prisma.user.findUnique({ where: { id: userData.id } });
-    return this.generateTokens(user);
+    const user = await prisma.user.findUnique({ where: { id: userData.id } });
+    return this.generateTokens(user!);
   }
 }
 
