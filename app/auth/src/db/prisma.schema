@@ -13,6 +13,7 @@ model User {
   lastName  String
   email     String   @unique
   password  String?
+  avatar    String?
   provider  Provider?   @default(LOCAL)
   role      UserRole?   @default(USER)
   token     Token?

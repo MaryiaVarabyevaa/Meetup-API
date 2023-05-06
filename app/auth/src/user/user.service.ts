@@ -19,6 +19,14 @@ class UserService {
     const user = await prisma.user.findUnique({ where: { email } });
     return user;
   }
+
+  async uploadAvatar(id: number, avatarPath: string) {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: { avatar: avatarPath }
+    });
+    return updatedUser;
+  }
 }
 
 export default new UserService();
