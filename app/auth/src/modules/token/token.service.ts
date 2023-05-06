@@ -1,9 +1,7 @@
 import dotenv from 'dotenv';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { TokenPayload } from './types/tokenPayload.type';
-import { TokenPair } from './types/tokenPair.type';
+import { Token, TokenPair, TokenPayload } from "./types";
 import { prisma } from '../../db';
-import { Token } from './types/token.type';
 
 dotenv.config();
 
@@ -55,7 +53,7 @@ class TokenService {
     return tokenData;
   }
 
-  async removeRefreshToken(refreshToken: string) {
+  async removeRefreshToken(refreshToken: string): Promise<Token | null> {
     const tokenData = prisma.token.delete({ where: { refreshToken } });
     return tokenData;
   }
