@@ -1,8 +1,10 @@
-import { OauthUserDtoType  } from "../types";
+import { OauthUserDtoType } from '../types';
 
 class OauthUserDto {
   firstName: string;
+
   lastName: string;
+
   email: string;
 
   constructor(data: OauthUserDtoType) {

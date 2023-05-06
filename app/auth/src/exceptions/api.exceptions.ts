@@ -1,4 +1,4 @@
-import { ErrorMessages, StatusCodes } from "../constants";
+import { ErrorMessages, StatusCodes } from '../constants';
 
 class ApiExceptions extends Error {
   status: number;

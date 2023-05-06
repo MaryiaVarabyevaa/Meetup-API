@@ -4,7 +4,8 @@
   "description": "An Express app using TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "start:dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "start:prod": "cross-env NODE_ENV=production ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
     "db:create": "ts-node ./src/db/createDB.ts",
     "db:migrate": "npx prisma migrate dev --name init --schema=./src/db/prisma.schema",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@prisma/client": "^4.13.0",
     "bcrypt": "^5.1.0",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "jsonwebtoken": "^9.0.0",

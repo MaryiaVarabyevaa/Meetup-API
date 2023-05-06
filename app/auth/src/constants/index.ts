@@ -1,2 +1,2 @@
-export { StatusCodes } from "./statusCodes";
-export { ErrorMessages } from "./errorMessages";
+export { StatusCodes } from './statusCodes';
+export { ErrorMessages } from './errorMessages';

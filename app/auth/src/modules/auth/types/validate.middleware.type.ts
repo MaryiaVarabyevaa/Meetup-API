@@ -4,10 +4,13 @@ import {
   validateLogin,
   validateRegistration,
   validateToken
-} from "../validators";
+} from '../validators';
 
-
-type ValidateMiddlewareType = typeof validateGoogleCallback | typeof validateGoogle
-  |typeof validateLogin | typeof validateRegistration | typeof validateToken;
+type ValidateMiddlewareType =
+  | typeof validateGoogleCallback
+  | typeof validateGoogle
+  | typeof validateLogin
+  | typeof validateRegistration
+  | typeof validateToken;
 
 export { ValidateMiddlewareType };

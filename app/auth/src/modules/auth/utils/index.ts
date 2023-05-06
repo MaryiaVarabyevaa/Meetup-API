@@ -1,1 +1,1 @@
-export { setCookies } from "./setCookies";
+export { setCookies } from './setCookies';

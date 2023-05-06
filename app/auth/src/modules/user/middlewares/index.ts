@@ -1,1 +1,1 @@
-export { multerMiddleware } from "./multer.middleware";
+export { multerMiddleware } from './multer.middleware';

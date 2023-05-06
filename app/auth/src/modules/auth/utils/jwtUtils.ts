@@ -1,8 +1,10 @@
-import { User } from "../types";
+import { User } from '../types';
 
 class TokenPayload {
   id: number;
+
   email: string;
+
   role: string;
 
   constructor(body: User) {
@@ -12,4 +14,4 @@ class TokenPayload {
   }
 }
 
-export { TokenPayload }
+export { TokenPayload };

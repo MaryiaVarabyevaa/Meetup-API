@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import authService from "./auth.service";
-import { StatusCodes } from "../../constants/index";
-import { setCookies } from "./utils";
-import { Tokens } from "./types";
+import { NextFunction, Request, Response } from 'express';
+import authService from './auth.service';
+import { StatusCodes } from '../../constants/index';
+import { setCookies } from './utils';
+import { Tokens } from './types';
 
 class AuthController {
   async signup(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +12,6 @@ class AuthController {
       res.status(StatusCodes.CREATED).json(user);
     } catch (err) {
       next(err);
-      return;
     }
   }
 
@@ -24,7 +23,6 @@ class AuthController {
       return res.status(StatusCodes.OK).json(user);
     } catch (err) {
       next(err);
-      return;
     }
   }
 
@@ -37,17 +35,15 @@ class AuthController {
       res.status(StatusCodes.NO_CONTENT);
     } catch (err) {
       next(err);
-      return;
     }
   }
 
   async authenticateWithGoogle(req: Request, res: Response, next: NextFunction) {
     try {
-      setCookies(res, req.user as Tokens)
+      setCookies(res, req.user as Tokens);
       res.redirect('/api/auth/profile');
     } catch (err) {
       next(err);
-      return;
     }
   }
 
@@ -59,16 +55,14 @@ class AuthController {
       return res.status(StatusCodes.OK).json(user);
     } catch (err) {
       next(err);
-      return;
     }
   }
 
   async showUserData(req: Request, res: Response, next: NextFunction) {
     try {
-      res.status(StatusCodes.OK).json( `Your email is ${req.user!.email}.`)
+      res.status(StatusCodes.OK).json(`Your email is ${req.user!.email}.`);
     } catch (err) {
       next(err);
-      return;
     }
   }
 }

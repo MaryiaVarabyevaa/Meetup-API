@@ -1,8 +1,7 @@
-import { NextFunction, Request, Response } from "express";
-import UserService from "./user.service";
-import { ApiExceptions } from "../../exceptions";
-import { ErrorMessages, StatusCodes } from "../../constants";
-
+import { NextFunction, Request, Response } from 'express';
+import UserService from './user.service';
+import { ApiExceptions } from '../../exceptions';
+import { ErrorMessages, StatusCodes } from '../../constants';
 
 class UserController {
   async changeUserRole(req: Request, res: Response, next: NextFunction) {
@@ -12,7 +11,6 @@ class UserController {
       return res.status(StatusCodes.OK).json(user);
     } catch (err) {
       next(err);
-      return;
     }
   }
 
@@ -28,7 +26,6 @@ class UserController {
       return res.status(StatusCodes.OK).json(updatedUser);
     } catch (err) {
       next(err);
-      return;
     }
   }
 }

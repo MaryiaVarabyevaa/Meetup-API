@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import { UserDto } from "../dtos";
+import { UserDto } from '../dtos';
 
-const registrationSchema = (data: UserDto ) => {
+const registrationSchema = (data: UserDto) => {
   const schema = Joi.object({
     firstName: Joi.string().min(2).max(50).required(),
     lastName: Joi.string().min(2).max(50).required(),
@@ -10,7 +10,6 @@ const registrationSchema = (data: UserDto ) => {
   });
 
   return schema.validate(data);
-}
+};
 
 export { registrationSchema };
-

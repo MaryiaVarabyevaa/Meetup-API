@@ -1,7 +1,8 @@
-import { UserLoginDtoType } from "../types";
+import { UserLoginDtoType } from '../types';
 
 class UserLoginDto {
   email: string;
+
   password: string;
 
   constructor(data: UserLoginDtoType) {

@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
-import { prisma } from "../../db";
-import { TokenPair } from "../token/types/tokenPair.type";
-import { TokenPayload } from "./utils/jwtUtils";
-import tokenService from "../token/token.service";
-import { ApiExceptions } from "../../exceptions";
+import { prisma } from '../../db';
+import { TokenPair } from '../token/types/tokenPair.type';
+import { TokenPayload } from './utils/jwtUtils';
+import tokenService from '../token/token.service';
+import { ApiExceptions } from '../../exceptions';
 
 class AuthService {
   private async generateTokens(user): Promise<TokenPair> {
     const payload = new TokenPayload(user);
-    const tokens = tokenService.generateToken({...payload});
+    const tokens = tokenService.generateToken({ ...payload });
     await tokenService.saveRefreshToken(user.id, tokens.refreshToken);
     return { ...tokens };
   }
@@ -24,8 +24,8 @@ class AuthService {
     return this.generateTokens(user);
   }
 
-  async signupWithGoogle(userDto): Promise<TokenPair>  {
-    const user = await prisma.user.create({ data: {...userDto} });
+  async signupWithGoogle(userDto): Promise<TokenPair> {
+    const user = await prisma.user.create({ data: { ...userDto } });
     return this.generateTokens(user);
   }
 
@@ -34,7 +34,7 @@ class AuthService {
     if (!user) {
       throw ApiExceptions.UnauthorizedError();
     }
-    const {password: userPassword} = user;
+    const { password: userPassword } = user;
     const isPasswordEquals = await bcrypt.compare(password, userPassword as string);
     if (!isPasswordEquals) {
       throw ApiExceptions.UnauthorizedError();

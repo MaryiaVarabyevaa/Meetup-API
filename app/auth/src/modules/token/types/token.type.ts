@@ -1,7 +1,7 @@
 interface Token {
   id: number;
   refreshToken: string;
-  userId: number
+  userId: number;
 }
 
 export { Token };

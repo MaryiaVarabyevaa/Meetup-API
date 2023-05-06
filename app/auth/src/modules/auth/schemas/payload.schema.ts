@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { TokenPayload } from "../utils/jwtUtils";
+import Joi from 'joi';
+import { TokenPayload } from '../utils/jwtUtils';
 
 const payloadSchema = (data: TokenPayload) => {
   const schema = Joi.object({
@@ -8,6 +8,6 @@ const payloadSchema = (data: TokenPayload) => {
     email: Joi.string().email().required(),
   });
   return schema.validate(data);
-}
+};
 
 export { payloadSchema };

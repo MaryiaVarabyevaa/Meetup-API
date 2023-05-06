@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import dotenv from 'dotenv';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { TokenPayload } from './types/tokenPayload.type';
 import { TokenPair } from './types/tokenPair.type';
-import { prisma } from "../../db";
-import { Token } from "./types/token.type";
+import { prisma } from '../../db';
+import { Token } from './types/token.type';
 
 dotenv.config();
 
@@ -37,18 +37,17 @@ class TokenService {
     const tokenData = await prisma.token.findUnique({ where: { userId } });
     if (tokenData) {
       await prisma.token.update({
-        where: {userId},
-        data: {refreshToken}
+        where: { userId },
+        data: { refreshToken }
       });
       return;
     }
     await prisma.token.create({
-        data: {
-          refreshToken,
-          userId
-        }
-    })
-    return;
+      data: {
+        refreshToken,
+        userId
+      }
+    });
   }
 
   async findRefreshToken(refreshToken: string): Promise<Token | null> {
