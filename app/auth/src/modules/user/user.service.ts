@@ -1,7 +1,8 @@
 import { prisma, UserRole } from '../../db';
+import { User } from "./types";
 
 class UserService {
-  async changeUserRole(id: number) {
+  async changeUserRole(id: number): Promise<User> {
     const userExists = await prisma.user.findUnique({ where: { id } });
     if (!userExists) {
       throw Error('Error');
@@ -15,12 +16,12 @@ class UserService {
     return user;
   }
 
-  async findUser(email: string) {
+  async findUser(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({ where: { email } });
     return user;
   }
 
-  async uploadAvatar(id: number, avatarPath: string) {
+  async uploadAvatar(id: number, avatarPath: string): Promise<User> {
     const updatedUser = await prisma.user.update({
       where: { id },
       data: { avatar: avatarPath }

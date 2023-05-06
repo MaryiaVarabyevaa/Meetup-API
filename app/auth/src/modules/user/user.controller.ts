@@ -2,19 +2,21 @@ import { NextFunction, Request, Response } from 'express';
 import UserService from './user.service';
 import { ApiExceptions } from '../../exceptions';
 import { ErrorMessages, StatusCodes } from '../../constants';
+import { ResponseType } from "./types";
 
 class UserController {
-  async changeUserRole(req: Request, res: Response, next: NextFunction) {
+  async changeUserRole(req: Request, res: Response, next: NextFunction): Promise<ResponseType> {
     try {
       const { id } = req.params;
       const user = await UserService.changeUserRole(+id);
       return res.status(StatusCodes.OK).json(user);
     } catch (err) {
       next(err);
+      return;
     }
   }
 
-  async uploadAvatar(req: Request, res: Response, next: NextFunction) {
+  async uploadAvatar(req: Request, res: Response, next: NextFunction): Promise<ResponseType> {
     try {
       const { id } = req.params;
       const { file } = req;
@@ -26,6 +28,7 @@ class UserController {
       return res.status(StatusCodes.OK).json(updatedUser);
     } catch (err) {
       next(err);
+      return;
     }
   }
 }
