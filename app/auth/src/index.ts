@@ -5,8 +5,9 @@ import { router } from './routes';
 import { passport } from './modules/auth/oauth.strategy';
 import { errorMiddleware } from './middlewares';
 
-(process.env.NODE_ENV !== 'production') ?
-  dotenv.config({ path: '.development.env' }) : dotenv.config({ path: '.production.env' });
+dotenv.config({
+  path: process.env.NODE_ENV === 'production' ? '.production.env' : '.development.env'
+});
 
 const PORT = process.env.PORT || 8080;
 
