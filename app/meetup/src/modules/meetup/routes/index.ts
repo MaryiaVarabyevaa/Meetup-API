@@ -3,6 +3,6 @@ import { router as meetup} from "./meetup";
 
 const router = express.Router();
 
-router.use('/auth', meetup);
+router.use('/meetup', meetup);
 
 export { router };

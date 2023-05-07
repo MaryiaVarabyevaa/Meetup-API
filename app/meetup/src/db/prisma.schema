@@ -11,12 +11,24 @@ model Meetup {
   id          Int      @id @default(autoincrement())
   topic       String
   description String
-  keywords    String
   time        String
-  date        DateTime
+  date        String
   place       String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  tags        TagOnMeetup[]
 }
 
+model Tag {
+id    Int    @id @default(autoincrement())
+name  String @unique
+meetups TagOnMeetup[]
+}
+
+
+model TagOnMeetup {
+id      Int    @id @default(autoincrement())
+tagId   Int
+meetupId Int
+tag     Tag    @relation(fields: [tagId], references: [id])
+meetup  Meetup @relation(fields: [meetupId], references: [id])
+@@unique([tagId, meetupId])
+}
