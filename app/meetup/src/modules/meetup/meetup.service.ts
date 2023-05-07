@@ -26,6 +26,12 @@ class MeetupService {
 
   async addMeetup(meetupDto: any) {
     const { topic, description, time, date, place, tags } = meetupDto;
+    const meetup = await prisma.meetup.findFirst({
+      where: { place, date, time },
+    });
+    if (meetup) {
+      throw Error("Already has");
+    }
     const createdMeetup = await prisma.meetup.create({
       data: {
         topic,
@@ -36,12 +42,31 @@ class MeetupService {
       },
     });
     const createdTags = await tagService.addTag(tags);
-    await tagOnMeetupService.addTagOnMeetup(createdTags, createdMeetup.id);
+    await Promise.all(
+      createdTags.map(async (tag) => {
+        await tagOnMeetupService.addTagOnMeetup(createdMeetup.id, tag.id)
+      })
+    )
     return { ...createdMeetup, tags };
   }
 
-  async updateMeetup() {
+  async updateMeetup(data: any) {
+    const { id, topic, description, time, date, place, tags } = data;
+    const updatedMeetup = await prisma.meetup.update({
+      where: { id },
+      data: { topic, description, time, date, place },
+    });
 
+    await tagOnMeetupService.deleteTagOnMeetup(id);
+
+    if (tags) {
+      for (const tagName of tags) {
+        const tag = await tagService.findOrUpdateTag(tagName);
+        await tagOnMeetupService.addTagOnMeetup(id, tag.id);
+      }
+    }
+
+    return updatedMeetup;
   }
 
   async findMeetupById(id: number) {

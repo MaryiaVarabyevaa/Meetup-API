@@ -22,11 +22,13 @@ class MeetupController {
     }
   }
 
-  async updateMeetup() {
+  async updateMeetup(req: Request, res: Response, next: NextFunction) {
     try {
-
+      const meetup = await meetupService.updateMeetup(req.body);
+      res.json(meetup)
     } catch (err) {
-
+      next(err);
+      return;
     }
   }
 

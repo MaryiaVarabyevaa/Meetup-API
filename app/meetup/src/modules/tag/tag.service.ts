@@ -20,6 +20,14 @@ class TagService {
     return newTags;
   }
 
+  async findOrUpdateTag(tagName: string) {
+    const tag = await prisma.tag.upsert({
+      where: { name: tagName },
+      update: {},
+      create: { name: tagName },
+    });
+    return tag;
+  }
 }
 
 export default new TagService();
