@@ -21,7 +21,7 @@ class MeetupService {
         },
       },
     });
-    return meetups.map((meetup) => ({ ...meetup, tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name)}));
+    return meetups.map((meetup) => ({ ...meetup, tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name) }));
   }
 
   async addMeetup(meetupDto: any) {
@@ -44,8 +44,25 @@ class MeetupService {
 
   }
 
-  async findMeetupById() {
-
+  async findMeetupById(id: number) {
+    const meetup = await prisma.meetup.findUnique({
+      where: { id },
+      include: {
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!meetup) {
+      throw new Error(`Meetup with id ${id} not found`);
+    }
+    return { ...meetup, tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name) };
   }
 
   async deleteMeetup() {

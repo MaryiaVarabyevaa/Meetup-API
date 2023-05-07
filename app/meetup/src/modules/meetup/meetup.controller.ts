@@ -23,11 +23,21 @@ class MeetupController {
   }
 
   async updateMeetup() {
+    try {
 
+    } catch (err) {
+
+    }
   }
 
-  async findMeetupById() {
-
+  async findMeetupById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const meetup = await meetupService.findMeetupById(+req.params.id);
+      res.json(meetup);
+    } catch (err) {
+      next(err);
+      return;
+    }
   }
 
   async deleteMeetup() {
