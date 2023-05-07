@@ -1,0 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:@localhost:5432/MeetupDB"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Meetup {
+  id          Int      @id @default(autoincrement())
+  topic       String
+  description String
+  keywords    String
+  time        String
+  date        DateTime
+  place       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
