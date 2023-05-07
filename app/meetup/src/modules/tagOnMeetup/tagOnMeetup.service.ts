@@ -16,6 +16,9 @@ class TagOnMeetupService {
     )
   }
 
+  async deleteTagOnMeetup(meetupId: number) {
+    return await prisma.tagOnMeetup.deleteMany({ where: { meetupId } });
+  }
 }
 
 export default new TagOnMeetupService();

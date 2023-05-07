@@ -65,8 +65,10 @@ class MeetupService {
     return { ...meetup, tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name) };
   }
 
-  async deleteMeetup() {
-
+  async deleteMeetup(id: number) {
+    await tagOnMeetupService.deleteTagOnMeetup(id);
+    const deletedMeetup = await prisma.meetup.delete({ where: { id } });
+    return deletedMeetup;
   }
 }
 

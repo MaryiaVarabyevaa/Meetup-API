@@ -40,8 +40,14 @@ class MeetupController {
     }
   }
 
-  async deleteMeetup() {
-
+  async deleteMeetup(req: Request, res: Response, next: NextFunction) {
+    try {
+      const meetup = await meetupService.deleteMeetup(+req.params.id);
+      return res.json(meetup);
+    } catch (err) {
+      next(err);
+      return;
+    }
   }
 }
 
