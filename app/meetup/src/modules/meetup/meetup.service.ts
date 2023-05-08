@@ -1,9 +1,9 @@
 import fs from "fs";
 import PDFDocument from "pdfkit";
+import * as csv from "fast-csv";
 import { prisma } from "../../db";
 import tagService from "../tag/tag.service";
 import tagOnMeetupService from "../tagOnMeetup/tagOnMeetup.service";
-
 class MeetupService {
 
   async findAllMeetups() {
@@ -144,7 +144,25 @@ class MeetupService {
         },
       },
     });
-    return meetups;
+
+    const csvStream = csv.format({ headers: true });
+    csvStream.pipe(fs.createWriteStream("meetups.csv"));
+
+    meetups.forEach((meetup) => {
+      const row = {
+        id: meetup.id,
+        topic: meetup.topic,
+        description: meetup.description,
+        time: meetup.time,
+        date: meetup.date,
+        place: meetup.place,
+        tags: meetup.tags.map(({ tag }) => tag.name).join(", "),
+      };
+      csvStream.write(row);
+    });
+
+    csvStream.end();
+    return "CSV report generated";
   }
 }
 
