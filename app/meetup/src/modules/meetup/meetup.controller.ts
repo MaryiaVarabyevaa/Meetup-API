@@ -51,6 +51,22 @@ class MeetupController {
       return;
     }
   }
+
+  async generateReport(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { type } = req.params;
+      let doc;
+      if (type === "pdf") {
+        doc = await meetupService.generateReportPDF();
+      } else {
+        doc = await meetupService.generateReportCVS();
+      }
+      return res.json(doc);
+    } catch (err) {
+      next(err);
+      return;
+    }
+  }
 }
 
 export default new MeetupController();

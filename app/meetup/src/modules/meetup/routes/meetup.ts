@@ -12,4 +12,6 @@ router.route('/:id')
   .get(meetupController.findMeetupById)
   .delete(meetupController.deleteMeetup);
 
+router.get('/report/:type', meetupController.generateReport);
+
 export { router }

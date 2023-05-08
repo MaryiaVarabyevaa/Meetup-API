@@ -1,3 +1,5 @@
+import fs from "fs";
+import PDFDocument from "pdfkit";
 import { prisma } from "../../db";
 import tagService from "../tag/tag.service";
 import tagOnMeetupService from "../tagOnMeetup/tagOnMeetup.service";
@@ -94,6 +96,55 @@ class MeetupService {
     await tagOnMeetupService.deleteTagOnMeetup(id);
     const deletedMeetup = await prisma.meetup.delete({ where: { id } });
     return deletedMeetup;
+  }
+
+  async generateReportPDF() {
+    const meetups = await prisma.meetup.findMany({
+      include: {
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const doc = new PDFDocument();
+    doc.pipe(fs.createWriteStream("meetups.pdf"));
+
+    doc.fontSize(20).text("Meetups", { align: "center" }).moveDown();
+    meetups.forEach((meetup) => {
+      doc.fontSize(14).text(`Topic: ${meetup.topic}`);
+      doc.fontSize(12).text(`Description: ${meetup.description}`);;
+      doc.fontSize(12).text(`Time: ${meetup.time}`);
+      doc.fontSize(12).text(`Date: ${meetup.date}`);
+      doc.fontSize(12).text(`Place: ${meetup.place}`);
+      doc.fontSize(12).text(`Tags: ${meetup.tags.map(({ tag }) => tag.name).join(", ")}`);
+      doc.moveDown();
+    });
+    doc.end();
+    return "PDF report generated";
+  }
+
+  async generateReportCVS () {
+    const meetups = await prisma.meetup.findMany({
+      include: {
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return meetups;
   }
 }
 
