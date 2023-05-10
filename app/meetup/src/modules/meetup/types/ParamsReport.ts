@@ -1,5 +1,5 @@
 interface ParamsReport {
-  type: "pdf" | "csv"
+  type: string;
 }
 
 export { ParamsReport };
