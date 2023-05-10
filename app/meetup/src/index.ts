@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.use(express.json());
+app.use(express.static('reports'));
 app.use('/api', router);
 
 const start = async () => {
