@@ -1,9 +1,10 @@
-import Joi from 'joi';
-import { ErrorMessages } from "../../constants/errorMessages";
-import { CreateMeetupDto } from "../meetup/dtos";
+import Joi from "joi";
+import { ErrorMessages } from "../../../constants/errorMessages";
+import { UpdateMeetupDto } from "../dtos";
 
-const createMeetupSchema = (data: CreateMeetupDto) => {
+const updateMeetupSchema = (data: UpdateMeetupDto) => {
   const schema = Joi.object({
+    id: Joi.number().min(1).integer().required(),
     topic: Joi.string().min(2).max(255).required(),
     description: Joi.string().min(2).max(500).required(),
     keywords: Joi.string().min(2).max(255).required(),
@@ -24,4 +25,4 @@ const createMeetupSchema = (data: CreateMeetupDto) => {
   return schema.validate(data);
 }
 
-export { createMeetupSchema };
+export { updateMeetupSchema };

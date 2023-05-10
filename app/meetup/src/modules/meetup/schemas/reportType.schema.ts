@@ -1,4 +1,4 @@
-import { ParamsReport } from "../meetup/types";
+import { ParamsReport } from "../types";
 import Joi from "joi";
 
 const reportTypeSchema = (data: ParamsReport) => {

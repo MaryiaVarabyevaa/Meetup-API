@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { ParamsId } from "../meetup/types";
+import { ParamsId } from "../types";
 
 
 const idSchema = (data: ParamsId) => {
