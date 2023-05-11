@@ -1,6 +1,6 @@
-import { CreateMeetupDto } from "./createMeetup.dto";
+import { CreateMeetupDto } from './createMeetup.dto';
 
-class UpdateMeetupDto extends CreateMeetupDto{
+class UpdateMeetupDto extends CreateMeetupDto {
   id: number;
 
   constructor(meetup: UpdateMeetupDto) {
@@ -10,4 +10,4 @@ class UpdateMeetupDto extends CreateMeetupDto{
   }
 }
 
-export { UpdateMeetupDto }
+export { UpdateMeetupDto };

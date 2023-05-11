@@ -1,5 +1,5 @@
-import express from "express";
-import { router as meetup} from "./meetup";
+import express from 'express';
+import { router as meetup } from './meetup';
 
 const router = express.Router();
 

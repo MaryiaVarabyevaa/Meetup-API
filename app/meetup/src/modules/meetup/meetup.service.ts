@@ -1,14 +1,13 @@
-import fs from "fs";
-import path from "path";
-import PDFDocument from "pdfkit";
-import * as csv from "fast-csv";
-import { prisma } from "../../db";
-import tagService from "../tag/tag.service";
-import tagOnMeetupService from "../tagOnMeetup/tagOnMeetup.service";
-import { checkDir } from "./utils";
+import fs from 'fs';
+import path from 'path';
+import PDFDocument from 'pdfkit';
+import * as csv from 'fast-csv';
+import { prisma } from '../../db';
+import tagService from '../tag/tag.service';
+import tagOnMeetupService from '../tagOnMeetup/tagOnMeetup.service';
+import { checkDir } from './utils';
 
 class MeetupService {
-
   async findAllMeetups() {
     const meetups = await prisma.meetup.findMany({
       // include включает связанные данные из другой таблицы (теги с каждым митапом)
@@ -20,13 +19,16 @@ class MeetupService {
               // позволяет выбрать тольго теги (другие поля опускаются)
               select: {
                 name: true,
-              },
+              }
             },
           },
-        },
-      },
+        }
+      }
     });
-    return meetups.map((meetup) => ({ ...meetup, tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name) }));
+    return meetups.map((meetup) => ({
+      ...meetup,
+      tags: meetup.tags.map((tagOnMeetup) => tagOnMeetup.tag.name),
+    }));
   }
 
   async addMeetup(meetupDto: any) {
@@ -35,7 +37,7 @@ class MeetupService {
       where: { place, date, time },
     });
     if (meetup) {
-      throw Error("Already has");
+      throw Error('Already has');
     }
     const createdMeetup = await prisma.meetup.create({
       data: {
@@ -44,19 +46,25 @@ class MeetupService {
         time,
         date,
         place,
-      },
+      }
     });
     const createdTags = await tagService.addTag(tags);
     await Promise.all(
       createdTags.map(async (tag) => {
-        await tagOnMeetupService.addTagOnMeetup(createdMeetup.id, tag.id)
+        await tagOnMeetupService.addTagOnMeetup(createdMeetup.id, tag.id);
       })
-    )
+    );
     return { ...createdMeetup, tags };
   }
 
   async updateMeetup(data: any) {
     const { id, topic, description, time, date, place, tags } = data;
+
+    const isExistedMeetup = await prisma.meetup.findFirst({ where: { id } });
+    if (!isExistedMeetup) {
+      throw Error("one more error");
+    }
+
     const updatedMeetup = await prisma.meetup.update({
       where: { id },
       data: { topic, description, time, date, place },
@@ -83,11 +91,11 @@ class MeetupService {
             tag: {
               select: {
                 name: true,
-              },
+              }
             },
           },
-        },
-      },
+        }
+      }
     });
     if (!meetup) {
       throw new Error(`Meetup with id ${id} not found`);
@@ -96,6 +104,10 @@ class MeetupService {
   }
 
   async deleteMeetup(id: number) {
+    const isExistedMeetup = await prisma.meetup.findFirst({ where: { id } });
+    if (!isExistedMeetup) {
+      throw Error("one more error");
+    }
     await tagOnMeetupService.deleteTagOnMeetup(id);
     const deletedMeetup = await prisma.meetup.delete({ where: { id } });
     return deletedMeetup;
@@ -109,46 +121,46 @@ class MeetupService {
             tag: {
               select: {
                 name: true,
-              },
+              }
             },
           },
-        },
-      },
+        }
+      }
     });
 
-    const dir = checkDir(path.join(__dirname, "../../reports"));
-    const docName = "meetups.pdf";
+    const dir = checkDir(path.join(__dirname, '../../reports'));
+    const docName = 'meetups.pdf';
 
     await new Promise((resolve, reject) => {
       const doc = new PDFDocument();
       const writeStream = fs.createWriteStream(path.join(dir, docName));
       doc.pipe(writeStream);
 
-      doc.fontSize(20).text("Meetups", { align: "center" }).moveDown();
+      doc.fontSize(20).text('Meetups', { align: 'center' }).moveDown();
       meetups.forEach((meetup) => {
         doc.fontSize(14).text(`Topic: ${meetup.topic}`);
         doc.fontSize(12).text(`Description: ${meetup.description}`);
         doc.fontSize(12).text(`Time: ${meetup.time}`);
         doc.fontSize(12).text(`Date: ${meetup.date}`);
         doc.fontSize(12).text(`Place: ${meetup.place}`);
-        doc.fontSize(12).text(`Tags: ${meetup.tags.map(({ tag }) => tag.name).join(", ")}`);
+        doc.fontSize(12).text(`Tags: ${meetup.tags.map(({ tag }) => tag.name).join(', ')}`);
         doc.moveDown();
       });
 
       doc
-        .on("error", (err) => {
+        .on('error', (err) => {
           reject(err);
         })
         .end();
 
       writeStream
-        .on("finish", () => {
+        .on('finish', () => {
           resolve();
         })
-        .on("error", (err) => {
+        .on('error', (err) => {
           reject(err);
         });
-    })
+    });
 
     return docName;
   }
@@ -161,15 +173,15 @@ class MeetupService {
             tag: {
               select: {
                 name: true,
-              },
+              }
             },
           },
-        },
-      },
+        }
+      }
     });
 
-    const dir = checkDir(path.join(__dirname, "../../reports"));
-    const docName = "meetups.csv";
+    const dir = checkDir(path.join(__dirname, '../../reports'));
+    const docName = 'meetups.csv';
 
     // промис используетс для обеспечения асинхронной операции записи
     await new Promise<void>((resolve, reject) => {
@@ -185,22 +197,22 @@ class MeetupService {
           time: meetup.time,
           date: meetup.date,
           place: meetup.place,
-          tags: meetup.tags.map(({ tag }) => tag.name).join(", "),
+          tags: meetup.tags.map(({ tag }) => tag.name).join(', ')
         };
         csvStream.write(row);
       });
 
       csvStream
-        .on("error", (err) => {
+        .on('error', (err) => {
           reject(err);
         })
         .end();
 
       writeStream
-        .on("finish", () => {
+        .on('finish', () => {
           resolve();
         })
-        .on("error", (err) => {
+        .on('error', (err) => {
           reject(err);
         });
     });

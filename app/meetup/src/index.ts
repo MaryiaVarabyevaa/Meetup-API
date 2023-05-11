@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { router } from "./modules/meetup/routes";
+import { router } from './modules/meetup/routes';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'production' ? '.production.env' : '.development.env'

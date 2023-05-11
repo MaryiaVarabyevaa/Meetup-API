@@ -1,11 +1,10 @@
-import { prisma } from "../../db";
-import { Tag } from "../tag/types";
+import { prisma } from '../../db';
+import { Tag } from '../tag/types';
 
 class TagOnMeetupService {
-
   async addTagOnMeetup(meetupId: number, tagId: number) {
     return await prisma.tagOnMeetup.create({
-      data: { meetupId, tagId, },
+      data: { meetupId, tagId }
     });
   }
 

@@ -1,10 +1,15 @@
 class CreateMeetupDto {
   topic: string;
+
   description: string;
+
   time: string;
+
   date: string;
+
   place: string;
-  tags: string[]
+
+  tags: string[];
 
   constructor(meetup: CreateMeetupDto) {
     this.topic = meetup.topic;

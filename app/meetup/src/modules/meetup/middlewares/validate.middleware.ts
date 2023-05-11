@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { ValidateMiddlewareType } from "../types";
+import { ValidateMiddlewareType } from '../types';
 
 const validateMiddleware = (validationFunction: ValidateMiddlewareType) => {
   return (req: Request, res: Response, next: NextFunction) => {

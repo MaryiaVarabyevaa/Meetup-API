@@ -1,1 +1,1 @@
-export { Tag } from "./tag.type";
+export { Tag } from './tag.type';

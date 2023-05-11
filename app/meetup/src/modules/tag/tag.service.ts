@@ -1,7 +1,6 @@
-import { prisma } from "../../db";
+import { prisma } from '../../db';
 
 class TagService {
-
   async findTag(tagName: string) {
     const tag = await prisma.tag.findUnique({ where: { name: tagName } });
     return tag;
