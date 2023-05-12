@@ -24,6 +24,7 @@ class UserController {
       if (!file) {
         throw ApiExceptions.BadRequest(ErrorMessages.NO_FILE);
       }
+
       const updatedUser = await UserService.uploadAvatar(+id, file.path);
       return res.status(StatusCodes.OK).json(updatedUser);
     } catch (err) {

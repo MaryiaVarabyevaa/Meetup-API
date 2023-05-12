@@ -10,7 +10,7 @@ class TokenPayload {
   constructor(body: User) {
     this.id = body.id;
     this.email = body.email;
-    this.role = body.role;
+    this.role = body.role!;
   }
 }
 

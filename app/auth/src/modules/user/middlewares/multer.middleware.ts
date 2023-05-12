@@ -10,11 +10,11 @@ const multerMiddleware = (req: Request, res: Response, next: NextFunction) => {
   }
   multer({
     storage: multer.diskStorage({
-      destination: (req: Request, file: Express.Multer.File, cb: Function) => {
+      destination: (_req: Request, _file: Express.Multer.File, cb: Function) => {
         cb(null, imagesPath);
       },
       filename: (
-        req: Request,
+        _req: Request,
         file: Express.Multer.File,
         cb: (error: Error | null, filename: string) => void
       ): void => {

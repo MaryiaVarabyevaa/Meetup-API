@@ -5,12 +5,13 @@ import meetupService from './meetup.service';
 import { createReadStream } from './utils';
 
 class MeetupController {
-  async findAllMeetups(req: Request, res: Response, next: NextFunction) {
+  async findAllMeetups(_req: Request, res: Response, next: NextFunction) {
     try {
       const meetups = await meetupService.findAllMeetups();
       return res.json(meetups);
     } catch (err) {
       next(err);
+      return;
     }
   }
 
@@ -20,6 +21,7 @@ class MeetupController {
       res.json(meetup);
     } catch (err) {
       next(err);
+      return;
     }
   }
 
@@ -47,6 +49,7 @@ class MeetupController {
       return res.json(meetup);
     } catch (err) {
       next(err);
+      return;
     }
   }
 
@@ -75,6 +78,7 @@ class MeetupController {
       return res.status(404).send('File not found');
     } catch (err) {
       next(err);
+      return;
     }
   }
 }

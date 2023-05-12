@@ -155,7 +155,7 @@ class MeetupService {
 
       writeStream
         .on('finish', () => {
-          resolve();
+          resolve('');
         })
         .on('error', (err) => {
           reject(err);

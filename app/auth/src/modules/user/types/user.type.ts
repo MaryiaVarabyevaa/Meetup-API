@@ -1,4 +1,4 @@
-import { UserRole, Provider } from "@prisma/client";
+import { UserRole, Provider } from "../../../db/index";
 
 interface User {
   id: number;

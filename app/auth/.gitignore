@@ -1,4 +1,5 @@
 /dist
+/node_modules_old
 /node_modules
 .eslintrc.json
 

@@ -1,8 +1,8 @@
 import { Response } from 'express';
 import { accessCookieExpiration, refreshCookieExpiration } from '../constants';
-import { Tokens } from '../types';
+import { TokenPair } from "../../token/types";
 
-const setCookies = (res: Response, user: Tokens): void => {
+const setCookies = (res: Response, user: TokenPair): void => {
   res.cookie('refreshToken', user.refreshToken, {
     expires: refreshCookieExpiration,
     httpOnly: true,

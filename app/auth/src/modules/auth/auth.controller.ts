@@ -63,9 +63,9 @@ class AuthController {
     }
   }
 
-  async showUserData(req: Request, res: Response, next: NextFunction): Promise<ResponseType> {
+  async showUserData(_req: Request, res: Response, next: NextFunction): Promise<ResponseType> {
     try {
-      res.status(StatusCodes.OK).json(`Your email is ${req.user!.email}.`);
+      res.status(StatusCodes.OK).json(`everything is okay`);
     } catch (err) {
       next(err);
     }

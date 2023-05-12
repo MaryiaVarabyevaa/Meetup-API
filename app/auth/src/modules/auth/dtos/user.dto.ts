@@ -2,11 +2,8 @@ import { UserDtoType } from '../types';
 
 class UserDto {
   firstName: string;
-
   lastName: string;
-
   email: string;
-
   password: string;
 
   constructor(data: UserDtoType) {

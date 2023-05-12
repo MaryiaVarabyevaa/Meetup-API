@@ -49,9 +49,8 @@ class AuthService {
     return this.generateTokens(user!);
   }
 
-  async logout(refreshToken: string): Promise<Token> {
+  async logout(refreshToken: string): Promise<any> {
     const token = await tokenService.removeRefreshToken(refreshToken);
-    console.log(token);
     return token;
   }
 

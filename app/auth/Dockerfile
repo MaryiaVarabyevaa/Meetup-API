@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
+
+RUN npx prisma generate --schema=./src/db/prisma.schema
 RUN npm run build
 
 EXPOSE 8080

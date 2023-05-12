@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import passport from 'passport';
-import { Strategy } from 'passport-google-oauth2';
-import { Provider } from '@prisma/client';
+import { Strategy } from "passport-google-oauth2";
+import { Provider } from "../../db/index";
 import userService from '../user/user.service';
 import authService from './auth.service';
 
@@ -19,7 +19,7 @@ passport.use(
       callbackURL: process.env.CALLBACK_URL!,
       passReqToCallback: true
     },
-    async (req, accessToken, refreshToken, profile, done) => {
+    async (_req: unknown, _accessToken: string, _refreshToken: string, profile: any, done: (error: any, user?: any, info?: any) => void) => {
       let tokens;
       const candidate = await userService.findUser(profile.emails?.[0].value);
       if (!candidate) {
