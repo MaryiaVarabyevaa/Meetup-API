@@ -19,7 +19,6 @@ services:
     networks:
       - mynetwork
 
-
   meetup-db:
     container_name: meetup-db
     image: postgres:latest
@@ -30,7 +29,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - postgres-db-data:/var/lib/postgresql/data
+      - meetup-db-data:/var/lib/postgresql/data
     ports:
       - 5433:5433
     networks:
@@ -64,7 +63,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - postgres-db-data:/var/lib/postgresql/data
+      - auth-db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
@@ -82,10 +81,9 @@ services:
     networks:
       - mynetwork
 
-
-
 volumes:
-  postgres-db-data:
+  meetup-db-data:
+  auth-db-data:
 
 networks:
   mynetwork:

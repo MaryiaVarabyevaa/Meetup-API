@@ -34,7 +34,7 @@ app.post("/sendLog", async (req: Request, res: Response, _next: NextFunction) =>
 
 const start = async () => {
   try {
-    app.listen(PORT, () => console.log(`Server started on port ${PORT} дфдфдфдффдфдфд`));
+    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (e) {
     console.log(e);
   }
