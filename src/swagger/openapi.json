@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5000/api",
+      "url": "https://meetup-api-server.onrender.com/",
       "description": "Development server"
     }
   ],
